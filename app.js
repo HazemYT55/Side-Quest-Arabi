@@ -1,34 +1,71 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-// ✅ Your actual project URL
 const SUPABASE_URL = 'https://jkjcrymbeezztllymflb.supabase.co';
-
-// ⚠️ PASTE YOUR FULL "PUBLISHABLE KEY" HERE (Make sure there are no spaces)
-// It starts with sb_publishable_...
+// ⚠️ MAKE SURE YOUR FULL KEY IS HERE
 const SUPABASE_ANON_KEY = 'PASTE_YOUR_KEY_HERE'; 
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let currentUser = '';
 
-let currentUser = localStorage.getItem('sq_user') || '';
+// === 1. SIGN UP & LOGIN ===
+window.signUp = async function() {
+  const email = document.getElementById('auth-email').value;
+  const password = document.getElementById('auth-password').value;
+  const username = document.getElementById('auth-username').value;
 
-// === 1. LOGIN SYSTEM (No passwords, just a name) ===
-window.setUser = function() {
-  const name = document.getElementById('name-input').value.trim();
-  if(!name) return alert("Please enter a name!");
-  
-  currentUser = name;
-  localStorage.setItem('sq_user', name); // Remembers you if you refresh
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app-screen').style.display = 'flex';
-  initApp();
+  if (!email || !password || !username) return alert("Please fill all fields!");
+
+  // Create the user in Supabase
+  const { data, error } = await supabase.auth.signUp({
+    email: email,
+    password: password,
+    options: {
+      data: { display_name: username } // Saves their name!
+    }
+  });
+
+  if (error) {
+    alert("Sign up error: " + error.message);
+  } else {
+    alert("Account created! You can now log in.");
+    // Switch to login tab automatically
+    document.getElementById('tab-login').click();
+  }
 }
 
-// Check if already logged in
-if(currentUser) {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app-screen').style.display = 'flex';
-  initApp();
+window.logIn = async function() {
+  const email = document.getElementById('auth-email').value;
+  const password = document.getElementById('auth-password').value;
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    alert("Login error: " + error.message);
+  } else {
+    // Get the display name they signed up with
+    currentUser = data.user.user_metadata.display_name || email.split('@')[0];
+    
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'flex';
+    initApp();
+  }
 }
+
+window.logout = async function() {
+  await supabase.auth.signOut();
+  location.reload();
+}
+
+// Check if they are already logged in when they open the page
+supabase.auth.getSession().then(({ data: { session } }) => {
+  if (session) {
+    currentUser = session.user.user_metadata.display_name || session.user.email.split('@')[0];
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'flex';
+    initApp();
+  }
+});
+
 
 // === 2. TABS ===
 document.querySelectorAll('.tab[data-view]').forEach(tab => {
@@ -40,7 +77,7 @@ document.querySelectorAll('.tab[data-view]').forEach(tab => {
   });
 });
 
-// === 3. CHAT (WhatsApp) ===
+// === 3. CHAT ===
 const chatMessagesEl = document.getElementById('chat-messages');
 const chatInput = document.getElementById('chat-input');
 
@@ -59,7 +96,7 @@ window.sendMessage = async function() {
   const content = chatInput.value.trim();
   if (!content) return;
   
-  chatInput.value = ''; // clear input immediately
+  chatInput.value = ''; 
   
   const { error } = await supabase.from('messages').insert({ 
     content: content, 
@@ -67,8 +104,8 @@ window.sendMessage = async function() {
   });
   
   if (error) {
-    console.error("Error sending message:", error);
-    alert("Failed to send message. Did you run the SQL?");
+    console.error(error);
+    alert("Failed to send. Check console.");
   }
 }
 
@@ -76,7 +113,7 @@ chatInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') sendMessage(); 
 });
 
-// === 4. POSTS (X) ===
+// === 4. POSTS ===
 const postsFeed = document.getElementById('posts-feed');
 const postContent = document.getElementById('post-content');
 const postMedia = document.getElementById('post-media');
@@ -101,7 +138,7 @@ window.createPost = async function() {
   const content = postContent.value.trim();
   const file = postMedia.files[0];
   
-  if (!content && !file) return; // Don't post empty things
+  if (!content && !file) return; 
 
   let mediaUrl = null;
   let mediaType = 'none';
@@ -134,15 +171,12 @@ window.createPost = async function() {
 
 // === 5. INIT & LIVE UPDATES ===
 async function initApp() {
-  // Load old messages
   const { data: msgs } = await supabase.from('messages').select('*').order('created_at', { ascending: true }).limit(50);
   if (msgs) msgs.forEach(renderMessage);
 
-  // Load old posts
   const { data: posts } = await supabase.from('posts').select('*').order('created_at', { ascending: false }).limit(30);
   if (posts) posts.forEach(renderPost);
 
-  // Listen for new ones coming in (Realtime)
   supabase.channel('chat').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, 
     (payload) => renderMessage(payload.new)).subscribe();
 
