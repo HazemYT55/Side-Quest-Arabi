@@ -2,8 +2,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const SUPABASE_URL = 'https://jkjcrymbeezztllymflb.supabase.co';
 // ⚠️ MAKE SURE YOUR FULL KEY IS HERE
-const SUPABASE_ANON_KEY = 'PASTE_YOUR_KEY_HERE'; 
-
+const SUPABASE_ANON_KEY = 'sb_publishable_Tjmc0Y5d4m-ax275t5HjkA_1W0aOiLt'; 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let currentUser = '';
 
