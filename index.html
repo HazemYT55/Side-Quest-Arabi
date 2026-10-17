@@ -4,23 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Side Quest Arabi</title>
+  <!-- THIS MUST BE EXACTLY style.css (No '1' at the end) -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Login / Signup Screen -->
   <div id="login-screen" style="display: flex; height: 100vh; align-items: center; justify-content: center; flex-direction: column;">
     <h2>Side Quest Arabi</h2>
     
     <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 300px;">
       
-      <!-- Tabs for Login / Signup -->
       <div style="display: flex; margin-bottom: 15px; border-bottom: 1px solid #ccc;">
         <div id="tab-login" class="auth-tab active" onclick="switchAuth('login')" style="flex: 1; text-align: center; padding: 10px; cursor: pointer; font-weight: bold;">Login</div>
         <div id="tab-signup" class="auth-tab" onclick="switchAuth('signup')" style="flex: 1; text-align: center; padding: 10px; cursor: pointer; color: #888;">Sign Up</div>
       </div>
 
-      <!-- Forms -->
       <input type="text" id="auth-username" placeholder="Username (e.g. Moaz)" style="width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; display: none;">
       <input type="email" id="auth-email" placeholder="Email" style="width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box;">
       <input type="password" id="auth-password" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box;">
@@ -29,7 +27,6 @@
     </div>
   </div>
 
-  <!-- Main App -->
   <div id="app-screen" style="display: none; height: 100vh; flex-direction: column;">
     <div class="tabs">
       <div class="tab active" data-view="chat">Chat</div>
@@ -56,7 +53,6 @@
   </div>
 
   <script>
-    // Simple script to switch between Login and Signup UI
     function switchAuth(mode) {
       const userInp = document.getElementById('auth-username');
       const btn = document.getElementById('auth-btn');
@@ -78,6 +74,7 @@
       }
     }
   </script>
+  <!-- THIS MUST BE app.js -->
   <script type="module" src="app.js"></script>
 </body>
 </html>
