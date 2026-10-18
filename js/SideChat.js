@@ -23,9 +23,7 @@ function renderMessage(msg) {
   const box = document.getElementById('chat-messages');
   const div = document.createElement('div');
   div.className = `message ${msg.sender_name === currentUser ? 'mine' : ''}`;
-  
   const time = new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-  
   div.innerHTML = `
     ${msg.sender_name !== currentUser ? `<div class="meta">${msg.sender_name}</div>` : ''}
     <div>${msg.content} <span class="time">${time}</span></div>
@@ -61,9 +59,7 @@ export function renderPrivateMessage(msg) {
   if(!box) return;
   const div = document.createElement('div');
   div.className = `message ${msg.sender_name === currentUser ? 'mine' : ''}`;
-  
   const time = new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-  
   div.innerHTML = `
     ${msg.sender_name !== currentUser ? `<div class="meta">${msg.sender_name}</div>` : ''}
     <div>${msg.content} <span class="time">${time}</span></div>
@@ -92,3 +88,26 @@ supabase.channel('private_chat').on('postgres_changes', { event: 'INSERT', schem
       }
     }
   }).subscribe();
+
+// Add to main list
+export function addToChatList(name) {
+  const list = document.getElementById('wa-chat-list');
+  // Check if already in list
+  if(document.getElementById('chat-item-' + name)) return;
+
+  const div = document.createElement('div');
+  div.className = 'wa-chat-item';
+  div.id = 'chat-item-' + name;
+  div.onclick = () => openPrivateChat(name);
+  div.innerHTML = `
+    <div class="wa-avatar bg-blue">${name.charAt(0).toUpperCase()}</div>
+    <div class="wa-chat-info">
+      <div class="wa-chat-top">
+        <h4>${name}</h4>
+        <span class="wa-time">Now</span>
+      </div>
+      <p>Tap to open private chat...</p>
+    </div>
+  `;
+  list.appendChild(div);
+}

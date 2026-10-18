@@ -64,16 +64,23 @@
   <!-- ================= APP SCREEN ================= -->
   <div id="app-screen" class="screen">
     
-    <!-- CHAT APP -->
+    <!-- ================= WHATSAPP ================= -->
     <div id="view-chat" class="view">
-      <!-- WhatsApp Header -->
       <div class="wa-header">
         <span class="wa-logo">SideChat</span>
-        <span class="wa-icons">📷 🔍 ⋮</span>
+        <span class="wa-icons" onclick="toggleWaMenu()">📷 🔍 ⋮</span>
       </div>
-      <!-- WhatsApp Chat List -->
+      
+      <!-- WA Dropdown Menu -->
+      <div id="wa-menu" class="wa-dropdown hidden">
+        <div onclick="goHome()">New Group</div>
+        <div onclick="goHome()">Settings</div>
+        <div onclick="goHome()">Log out</div>
+      </div>
+
+      <!-- Chat List -->
       <div class="wa-chat-list" id="wa-chat-list">
-        <!-- Main team chat item -->
+        <!-- Team Chat -->
         <div class="wa-chat-item" onclick="openTeamChat()">
           <div class="wa-avatar bg-group">👥</div>
           <div class="wa-chat-info">
@@ -81,20 +88,21 @@
               <h4>Side Quest Team</h4>
               <span class="wa-time">Now</span>
             </div>
-            <p>The main group chat...</p>
+            <p>Tap to open the group...</p>
           </div>
         </div>
+        <!-- Private chats will be injected here dynamically by JS -->
       </div>
-      <!-- Bottom Nav (WhatsApp) -->
+
       <div class="wa-bottom-nav">
         <div class="active">💬<br>Chats</div>
-        <div>🔄<br>Updates</div>
-        <div>👥<br>Communities</div>
-        <div>📞<br>Calls</div>
+        <div onclick="alert('Updates coming soon!')">🔄<br>Updates</div>
+        <div onclick="alert('Communities coming soon!')">👥<br>Communities</div>
+        <div onclick="alert('Calls coming soon!')">📞<br>Calls</div>
       </div>
     </div>
 
-    <!-- TEAM CHAT SCREEN (Inside Chat App) -->
+    <!-- TEAM CHAT -->
     <div id="view-team-chat" class="view">
       <div class="wa-inner-header">
         <button onclick="backToChatList()" style="background:none;border:none;color:#aebac1;font-size:20px;">←</button>
@@ -110,17 +118,36 @@
       </div>
     </div>
 
-    <!-- X APP -->
+    <!-- ================= X (TWITTER) ================= -->
     <div id="view-posts" class="view">
-      <div class="x-header">
-        <div class="x-logo">𝕏</div>
+      <div class="x-header"><div class="x-logo">𝕏</div></div>
+      
+      <!-- X Tabs -->
+      <div class="x-tabs">
+        <div class="x-tab active" onclick="switchXTab('home')">For you</div>
+        <div class="x-tab" onclick="switchXTab('search')">Search</div>
       </div>
-      <div id="posts-feed" class="feed-box"></div>
-      <!-- Floating Action Button for X -->
+
+      <!-- X Home Feed -->
+      <div id="x-home-feed" class="feed-box">
+        <div id="posts-feed"></div>
+      </div>
+
+      <!-- X Search Feed -->
+      <div id="x-search-feed" class="feed-box hidden">
+        <div class="x-search-bar">
+          <input type="text" placeholder="Search Side Quest...">
+        </div>
+        <p style="color:#71767b;text-align:center;margin-top:50px;">Search functionality coming soon!</p>
+      </div>
+
       <button class="x-fab" onclick="openXPostModal()">+</button>
-      <!-- Bottom Nav (X) -->
+      
       <div class="x-bottom-nav">
-        <div>🏠</div><div>🔍</div><div>🔔</div><div>✉️</div>
+        <div class="active" onclick="switchXTab('home')">🏠</div>
+        <div onclick="switchXTab('search')">🔍</div>
+        <div onclick="alert('Notifications coming soon!')">🔔</div>
+        <div onclick="alert('Messages coming soon!')">✉️</div>
       </div>
     </div>
     
@@ -142,7 +169,7 @@
       </div>
     </div>
 
-    <!-- TO-DO APP -->
+    <!-- ================= TO-DO ================= -->
     <div id="view-todo" class="view">
       <div class="todo-header">My Tasks</div>
       <div id="todo-list" class="todo-list"></div>
@@ -152,25 +179,24 @@
       </div>
     </div>
 
-    <!-- CONTACTS APP -->
+    <!-- ================= CONTACTS ================= -->
     <div id="view-contacts" class="view">
       <div class="wa-header" style="background:#121212;"><span class="wa-logo" style="color:#fff;">Contacts</span></div>
       <div class="contacts-list" id="contacts-list"></div>
     </div>
 
-    <!-- SETTINGS APP -->
+    <!-- ================= SETTINGS ================= -->
     <div id="view-settings" class="view">
       <div class="settings-header">Settings</div>
       <div class="settings-content">
         
-        <!-- Profile Section -->
         <div class="settings-profile">
           <div class="settings-avatar" id="profile-avatar">👤</div>
           <div class="settings-info">
             <h3 id="settings-username">User</h3>
             <p id="settings-bio">Hey there! I am using Side Quest.</p>
           </div>
-          <button class="btn-edit" onclick="editProfile()">Edit</button>
+          <button class="btn-edit" onclick="openEditProfile()">Edit</button>
         </div>
 
         <div class="settings-group">
@@ -181,14 +207,27 @@
 
         <div class="settings-group">
           <h4>Chat Settings</h4>
-          <div class="setting-item" onclick="alert('Theme settings coming soon!')">🎨 Theme <span>›</span></div>
-          <div class="setting-item" onclick="alert('Wallpaper settings coming soon!')">🖼️ Wallpaper <span>›</span></div>
+          <div class="setting-item" onclick="alert('Theme changed to Dark Mode!')">🎨 Theme <span>›</span></div>
+          <div class="setting-item" onclick="alert('Change wallpaper from the home screen!')">🖼️ Wallpaper <span>›</span></div>
         </div>
 
         <button onclick="logout()" class="btn-logout">Log Out</button>
       </div>
     </div>
 
+  </div>
+
+  <!-- ================= EDIT PROFILE MODAL ================= -->
+  <div id="edit-profile-modal" class="modal">
+    <div class="modal-content" style="background:#1e1e1e; padding:20px;">
+      <h3 style="color:#fff; margin-top:0;">Edit Profile</h3>
+      <input type="text" id="edit-bio" placeholder="Your Bio" style="width:100%; padding:12px; margin-bottom:10px; background:#2c2c2c; border:none; border-radius:8px; color:white;">
+      <input type="file" id="edit-avatar" accept="image/*" style="color:white; margin-bottom:15px;">
+      <div style="display:flex; gap:10px;">
+        <button onclick="closeEditProfile()" style="flex:1; padding:12px; background:#333; color:white; border:none; border-radius:8px;">Cancel</button>
+        <button onclick="saveProfile()" style="flex:1; padding:12px; background:#25D366; color:white; border:none; border-radius:8px; font-weight:bold;">Save</button>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="js/app.js"></script>

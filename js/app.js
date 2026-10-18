@@ -6,6 +6,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export let currentUser = '';
 export let currentEmail = '';
+export let currentUserId = '';
 
 // Clock
 function updateClock() {
@@ -32,6 +33,29 @@ window.openApp = function(appName) {
 window.goHome = function() {
   document.getElementById('app-screen').classList.remove('active');
   document.getElementById('home-screen').classList.add('active');
+}
+
+// WA Menu
+window.toggleWaMenu = function() {
+  document.getElementById('wa-menu').classList.toggle('hidden');
+}
+
+// X Tabs
+window.switchXTab = function(tab) {
+  document.querySelectorAll('.x-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.x-bottom-nav div').forEach(t => t.classList.remove('active'));
+  
+  if(tab === 'home') {
+    document.getElementById('x-home-feed').classList.remove('hidden');
+    document.getElementById('x-search-feed').classList.add('hidden');
+    document.querySelectorAll('.x-tab')[0].classList.add('active');
+    document.querySelectorAll('.x-bottom-nav div')[0].classList.add('active');
+  } else {
+    document.getElementById('x-home-feed').classList.add('hidden');
+    document.getElementById('x-search-feed').classList.remove('hidden');
+    document.querySelectorAll('.x-tab')[1].classList.add('active');
+    document.querySelectorAll('.x-bottom-nav div')[1].classList.add('active');
+  }
 }
 
 // Auth
@@ -70,15 +94,17 @@ window.logIn = async function() {
   } else {
     currentUser = data.user.user_metadata.display_name || email.split('@')[0];
     currentEmail = data.user.email;
+    currentUserId = data.user.id;
     
     document.getElementById('auth-screen').classList.remove('active');
     document.getElementById('home-screen').classList.add('active');
     document.getElementById('settings-username').innerText = currentUser;
     
     // Load Profile
-    const { data: profile } = await supabase.from('profiles').select('*').eq('id', data.user.id).single();
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUserId).single();
     if (profile) {
-      document.getElementById('settings-bio').innerText = profile.bio || 'Hey there! I am using Side Quest.';
+      if(profile.bio) document.getElementById('settings-bio').innerText = profile.bio;
+      if(profile.avatar_url) document.getElementById('profile-avatar').style.backgroundImage = `url('${profile.avatar_url}')`;
     }
 
     import('./SideChat.js').then(m => m.initChat());
@@ -101,6 +127,47 @@ window.openTeamChat = function() {
   document.getElementById('view-team-chat').classList.add('active');
 }
 
-// X Modal
+// X Post Modal
 window.openXPostModal = () => document.getElementById('x-post-modal').classList.add('active');
 window.closeXPostModal = () => document.getElementById('x-post-modal').classList.remove('active');
+
+// Profile Editing
+window.openEditProfile = function() {
+  document.getElementById('edit-profile-modal').classList.add('active');
+  document.getElementById('edit-bio').value = document.getElementById('settings-bio').innerText;
+}
+window.closeEditProfile = function() {
+  document.getElementById('edit-profile-modal').classList.remove('active');
+}
+window.saveProfile = async function() {
+  const bio = document.getElementById('edit-bio').value.trim();
+  const avatarFile = document.getElementById('edit-avatar').files[0];
+  let avatarUrl = null;
+
+  if (avatarFile) {
+    const fileName = `avatar-${currentUserId}.${avatarFile.name.split('.').pop()}`;
+    const { error } = await supabase.storage.from('post-media').upload(fileName, avatarFile, { upsert: true });
+    if (!error) {
+      const { data } = supabase.storage.from('post-media').getPublicUrl(fileName);
+      avatarUrl = data.publicUrl;
+      document.getElementById('profile-avatar').style.backgroundImage = `url('${avatarUrl}')`;
+    }
+  }
+
+  const updates = { bio };
+  if (avatarUrl) updates.avatar_url = avatarUrl;
+
+  await supabase.from('profiles').update(updates).eq('id', currentUserId);
+  
+  document.getElementById('settings-bio').innerText = bio;
+  closeEditProfile();
+}
+
+// Realtime Listener for Private Messages (to update the WhatsApp List)
+supabase.channel('whatsapp_list').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, 
+  (payload) => {
+    const msg = payload.new;
+    if (msg.receiver_name === currentUser && msg.sender_name !== currentUser) {
+      import('./SideChat.js').then(m => m.addToChatList(msg.sender_name));
+    }
+  }).subscribe();
