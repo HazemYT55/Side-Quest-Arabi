@@ -2,50 +2,76 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Side Quest Arabi</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- ================= LOGIN / SIGNUP SCREEN ================= -->
+  <!-- ================= LOGIN SCREEN ================= -->
   <div id="login-screen" class="screen active">
     <div class="auth-box">
-      <h2>Side Quest Arabi</h2>
-      
+      <h2>Side Quest</h2>
       <div class="auth-tabs">
         <div id="tab-login" class="auth-tab active" onclick="switchAuth('login')">Login</div>
         <div id="tab-signup" class="auth-tab" onclick="switchAuth('signup')">Sign Up</div>
       </div>
-
-      <input type="text" id="auth-username" placeholder="Username (e.g. Moaz)" class="hidden">
+      <input type="text" id="auth-username" placeholder="Username" class="hidden">
       <input type="email" id="auth-email" placeholder="Email">
       <input type="password" id="auth-password" placeholder="Password">
-      
       <button id="auth-btn" onclick="logIn()" class="btn-primary">Login</button>
     </div>
   </div>
 
-  <!-- ================= MAIN APP SCREEN ================= -->
+  <!-- ================= PHONE HOME SCREEN ================= -->
+  <div id="home-screen" class="screen">
+    <div class="wallpaper">
+      <div class="status-bar">
+        <span id="clock">12:00</span>
+        <span>📶 🔋</span>
+      </div>
+
+      <div class="app-grid">
+        <!-- Chat App Icon (WhatsApp style) -->
+        <div class="app-icon" onclick="openApp('chat')">
+          <div class="icon-box bg-green">💬</div>
+          <span>Chat</span>
+        </div>
+
+        <!-- X App Icon -->
+        <div class="app-icon" onclick="openApp('feed')">
+          <div class="icon-box bg-black">𝕏</div>
+          <span>Feed</span>
+        </div>
+
+        <!-- Logout App Icon -->
+        <div class="app-icon" onclick="logout()">
+          <div class="icon-box bg-red">🚪</div>
+          <span>Logout</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= APP SCREEN (Opens when clicking an icon) ================= -->
   <div id="app-screen" class="screen">
     
-    <!-- TOP NAVIGATION -->
-    <div class="navbar">
-      <div class="nav-tab active" data-view="chat" onclick="switchView('chat')">Chat</div>
-      <div class="nav-tab" data-view="feed" onclick="switchView('feed')">Feed (X)</div>
-      <div class="nav-tab" onclick="logout()">Logout</div>
+    <!-- Top App Bar (with Back button) -->
+    <div class="app-navbar">
+      <button onclick="goHome()" class="btn-back">← Home</button>
+      <span id="app-title">Chat</span>
     </div>
 
-    <!-- CHAT PAGE -->
+    <!-- CHAT APP VIEW -->
     <div id="view-chat" class="view active">
       <div id="chat-messages" class="chat-box"></div>
       <div class="chat-input-area">
-        <input type="text" id="chat-input" placeholder="Type a message...">
-        <button onclick="sendMessage()" class="btn-send">Send</button>
+        <input type="text" id="chat-input" placeholder="Message...">
+        <button onclick="sendMessage()" class="btn-send">➤</button>
       </div>
     </div>
 
-    <!-- FEED PAGE -->
+    <!-- FEED APP VIEW -->
     <div id="view-feed" class="view">
       <div class="post-input-area">
         <textarea id="post-content" rows="2" placeholder="What's happening?"></textarea>
@@ -59,7 +85,6 @@
 
   </div>
 
-  <!-- LINK TO JAVASCRIPT -->
   <script type="module" src="app.js"></script>
 </body>
 </html>

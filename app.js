@@ -6,7 +6,34 @@ const SUPABASE_ANON_KEY = 'sb_publishable_Tjmc0Y5d4m-ax275t5HjkA_1W0aOiLt';
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let currentUser = '';
 
-// ================= 1. AUTHENTICATION & UI =================
+// ================= 1. PHONE CLOCK & NAVIGATION =================
+function updateClock() {
+  const now = new Date();
+  let hours = now.getHours();
+  let minutes = now.getMinutes();
+  hours = hours < 10 ? '0' + hours : hours;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  document.getElementById('clock').innerText = `${hours}:${minutes}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+window.openApp = function(appName) {
+  document.getElementById('home-screen').classList.remove('active');
+  document.getElementById('app-screen').classList.add('active');
+  
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(`view-${appName}`).classList.add('active');
+  
+  document.getElementById('app-title').innerText = appName === 'chat' ? 'Chat' : 'Feed (X)';
+}
+
+window.goHome = function() {
+  document.getElementById('app-screen').classList.remove('active');
+  document.getElementById('home-screen').classList.add('active');
+}
+
+// ================= 2. AUTHENTICATION =================
 window.switchAuth = function(mode) {
   document.getElementById('auth-username').classList.toggle('hidden', mode === 'login');
   document.getElementById('auth-btn').innerText = mode === 'login' ? 'Login' : 'Create Account';
@@ -41,7 +68,12 @@ window.logIn = async function() {
     alert("Login error: " + error.message);
   } else {
     currentUser = data.user.user_metadata.display_name || email.split('@')[0];
-    showApp();
+    document.getElementById('login-screen').classList.remove('active');
+    document.getElementById('home-screen').classList.add('active');
+    
+    // Initialize apps in background
+    initChat();
+    initFeed();
   }
 }
 
@@ -50,28 +82,17 @@ window.logout = async function() {
   location.reload();
 }
 
-function showApp() {
-  document.getElementById('login-screen').classList.remove('active');
-  document.getElementById('app-screen').classList.add('active');
-  initChat();
-  initFeed();
-}
-
 supabase.auth.getSession().then(({ data: { session } }) => {
   if (session) {
     currentUser = session.user.user_metadata.display_name || session.user.email.split('@')[0];
-    showApp();
+    document.getElementById('login-screen').classList.remove('active');
+    document.getElementById('home-screen').classList.add('active');
+    initChat();
+    initFeed();
   }
 });
 
-window.switchView = function(viewName) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.nav-tab[data-view]').forEach(t => t.classList.remove('active'));
-  document.getElementById(`view-${viewName}`).classList.add('active');
-  document.querySelector(`.nav-tab[data-view="${viewName}"]`).classList.add('active');
-}
-
-// ================= 2. CHAT LOGIC =================
+// ================= 3. CHAT LOGIC =================
 window.sendMessage = async function() {
   const input = document.getElementById('chat-input');
   const content = input.value.trim();
@@ -84,10 +105,7 @@ window.sendMessage = async function() {
     sender_name: currentUser 
   });
   
-  if (error) {
-    console.error(error);
-    alert("Failed to send. Check console for details.");
-  }
+  if (error) console.error(error);
 }
 
 function renderMessage(msg) {
@@ -114,7 +132,7 @@ document.getElementById('chat-input').addEventListener('keypress', (e) => {
   if (e.key === 'Enter') sendMessage(); 
 });
 
-// ================= 3. FEED LOGIC =================
+// ================= 4. FEED LOGIC =================
 window.createPost = async function() {
   const content = document.getElementById('post-content').value.trim();
   const file = document.getElementById('post-media').files[0];
