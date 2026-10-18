@@ -7,18 +7,19 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 export let currentUser = '';
 export let currentEmail = '';
 
-// Clock
+// Real clock for home screen
 function updateClock() {
   try {
     const now = new Date();
     let h = now.getHours(), m = now.getMinutes();
-    const clockElement = document.querySelector('.time');
-    if (clockElement) clockElement.innerText = `${h<10?'0'+h:h}:${m<10?'0'+m:m}`;
+    const clockEl = document.getElementById('clock');
+    const dateEl = document.getElementById('date-display');
+    if (clockEl) clockEl.innerText = `${h<10?'0'+h:h}:${m<10?'0'+m:m}`;
+    if (dateEl) dateEl.innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
   } catch (e) {}
 }
 setInterval(updateClock, 1000); updateClock();
 
-// Navigation
 window.openApp = function(appName) {
   document.getElementById('home-screen').classList.remove('active');
   document.getElementById('app-screen').classList.add('active');
@@ -79,7 +80,6 @@ window.logIn = async function() {
     document.getElementById('phone-wallpaper').style.backgroundImage = `url('${savedWall}')`;
     document.getElementById('wallpaper-input').value = savedWall;
 
-    // Load Module scripts
     import('./SideChat.js').then(m => m.initChat());
     import('./SidePosts.js').then(m => m.initFeed());
     import('./Contact.js').then(m => m.loadContacts());
@@ -99,7 +99,6 @@ window.saveWallpaper = function() {
   alert("Wallpaper saved!");
 }
 
-// Auto Login
 supabase.auth.getSession().then(({ data: { session } }) => {
   if (session) {
     currentUser = session.user.user_metadata.display_name || session.user.email.split('@')[0];

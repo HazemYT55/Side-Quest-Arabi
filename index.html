@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Side Quest</title>
   
-  <!-- CSS LINKS -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/SideChat.css">
   <link rel="stylesheet" href="css/SidePosts.css">
@@ -22,30 +21,30 @@
         <div id="tab-login" class="auth-tab active" onclick="switchAuth('login')">Login</div>
         <div id="tab-signup" class="auth-tab" onclick="switchAuth('signup')">Sign Up</div>
       </div>
-      <input type="text" id="auth-code" placeholder="Invite Code (Check your email)" class="hidden">
-      <input type="text" id="auth-username" placeholder="Username (e.g. Moaz)" class="hidden">
+      <input type="text" id="auth-code" placeholder="Invite Code" class="hidden">
+      <input type="text" id="auth-username" placeholder="Username" class="hidden">
       <input type="email" id="auth-email" placeholder="Email">
       <input type="password" id="auth-password" placeholder="Password">
       <button id="auth-btn" onclick="logIn()" class="btn-primary">Login</button>
     </div>
   </div>
 
-  <!-- ================= HOME SCREEN ================= -->
+  <!-- ================= HOME SCREEN (PHONE ICONS) ================= -->
   <div id="home-screen" class="screen">
-    <div class="wallpaper" id="phone-wallpaper">
-      <div class="top-bar">
-        <div class="time">12:00</div>
-        <div class="dynamic-island"></div>
-        <div class="battery">100% 🔋</div>
+    <div class="home-wallpaper" id="phone-wallpaper">
+      
+      <div class="home-time">
+        <h1 id="clock">12:00</h1>
+        <p id="date-display">Monday, Jan 1</p>
       </div>
 
       <div class="app-grid">
         <div class="app-icon" onclick="openApp('chat')">
-          <div class="icon-box bg-green">💬</div>
+          <div class="icon-box bg-whatsapp">💬</div>
           <span>Side Chat</span>
         </div>
         <div class="app-icon" onclick="openApp('posts')">
-          <div class="icon-box bg-black">𝕏</div>
+          <div class="icon-box bg-x">𝕏</div>
           <span>Side Posts</span>
         </div>
         <div class="app-icon" onclick="openApp('contacts')">
@@ -58,26 +57,17 @@
         </div>
       </div>
 
-      <div class="dock">
-        <div class="dock-icon bg-green" onclick="openApp('chat')">💬</div>
-        <div class="dock-icon bg-blue" onclick="openApp('contacts')">👥</div>
-      </div>
-
-      <div class="page-dots">
-        <div class="dot active"></div>
-        <div class="dot"></div>
-      </div>
     </div>
   </div>
 
   <!-- ================= APP SCREEN ================= -->
   <div id="app-screen" class="screen">
     <div class="app-navbar">
-      <button onclick="goHome()" class="btn-back">← Home</button>
+      <button onclick="goHome()" class="btn-back">←</button>
       <span id="app-title">App</span>
     </div>
 
-    <!-- SIDE CHAT (Main Team Chat) -->
+    <!-- SIDE CHAT -->
     <div id="view-chat" class="view">
       <div id="chat-messages" class="chat-box"></div>
       <div class="chat-input-area">
@@ -86,7 +76,7 @@
       </div>
     </div>
 
-    <!-- PRIVATE CHAT (Opens from Contacts) -->
+    <!-- PRIVATE CHAT -->
     <div id="view-private-chat" class="view">
       <div id="private-chat-messages" class="chat-box"></div>
       <div class="chat-input-area">
@@ -103,7 +93,7 @@
           <input type="file" id="post-media" accept="image/*,video/*">
           <button onclick="createPost()" class="btn-post">Post</button>
         </div>
-        <div id="upload-error" style="color: red; font-size: 12px; margin-top: 5px;"></div>
+        <div id="upload-error" style="color: #ff4d4d; font-size: 12px; margin-top: 5px; font-weight: bold;"></div>
       </div>
       <div id="posts-feed" class="feed-box"></div>
     </div>
@@ -117,20 +107,20 @@
     <div id="view-settings" class="view">
       <div class="settings-menu">
         <h3>Account</h3>
-        <p>Logged in as: <b id="settings-username">User</b></p>
-        <p>Email: <b id="settings-email">email</b></p>
-        <hr>
-        <h3>Phone Appearance</h3>
-        <p>Wallpaper URL:</p>
-        <input type="text" id="wallpaper-input" placeholder="Paste an image URL here...">
-        <button onclick="saveWallpaper()" class="btn-primary" style="margin-top: 10px;">Save Wallpaper</button>
-        <hr>
-        <button onclick="logout()" style="background: #ff4d4d; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold;">Log Out</button>
+        <div class="profile-card">
+          <p>Logged in as: <b id="settings-username">User</b></p>
+          <p>Email: <b id="settings-email">email</b></p>
+        </div>
+        
+        <h3 style="margin-top: 20px;">Wallpaper</h3>
+        <input type="text" id="wallpaper-input" placeholder="Paste image URL here...">
+        <button onclick="saveWallpaper()" class="btn-primary">Save Wallpaper</button>
+        <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+        <button onclick="logout()" class="btn-logout">Log Out</button>
       </div>
     </div>
   </div>
 
-  <!-- JS LINKS -->
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
