@@ -17,16 +17,16 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Ro
 
 /* Home Screen */
 #home-screen { background: #000; }
-.home-wallpaper { height: 100%; display: flex; flex-direction: column; background-size: cover; background-position: center; background-color: #121212; padding-top: 40px; }
-.home-time { text-align: center; color: white; margin-bottom: 40px; }
-.home-time h1 { font-size: 60px; margin: 0; font-weight: 600; letter-spacing: -2px; }
-.home-time p { margin: 5px 0 0; font-size: 16px; opacity: 0.8; }
+.home-wallpaper { height: 100%; display: flex; flex-direction: column; background-size: cover; background-position: center; background-color: #121212; padding-top: 50px; }
+.home-time { text-align: center; color: white; margin-bottom: 50px; }
+.home-time h1 { font-size: 72px; margin: 0; font-weight: 500; letter-spacing: -3px; }
+.home-time p { margin: 5px 0 0; font-size: 16px; opacity: 0.9; font-weight: 500; }
 
 /* App Grid */
-.app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 0 20px; justify-items: center; align-content: start; }
+.app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; padding: 0 20px; justify-items: center; align-content: start; }
 .app-icon { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; }
 .app-icon:active { transform: scale(0.85); }
-.icon-box { width: 65px; height: 65px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 32px; color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-bottom: 8px; }
+.icon-box { width: 65px; height: 65px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 34px; color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-bottom: 8px; }
 .app-icon span { color: white; font-size: 12px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
 
 .bg-whatsapp { background: #25D366; }

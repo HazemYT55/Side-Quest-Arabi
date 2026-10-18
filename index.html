@@ -29,7 +29,7 @@
     </div>
   </div>
 
-  <!-- ================= HOME SCREEN (PHONE ICONS) ================= -->
+  <!-- ================= HOME SCREEN ================= -->
   <div id="home-screen" class="screen">
     <div class="home-wallpaper" id="phone-wallpaper">
       
@@ -67,12 +67,14 @@
       <span id="app-title">App</span>
     </div>
 
-    <!-- SIDE CHAT -->
+    <!-- SIDE CHAT (WhatsApp Style) -->
     <div id="view-chat" class="view">
       <div id="chat-messages" class="chat-box"></div>
       <div class="chat-input-area">
-        <input type="text" id="chat-input" placeholder="Message team...">
-        <button onclick="sendMessage()" class="btn-send">➤</button>
+        <span class="icon-smile">😊</span>
+        <input type="text" id="chat-input" placeholder="Message">
+        <span class="icon-attach">📎</span>
+        <button onclick="sendMessage()" class="btn-send-mic">🎤</button>
       </div>
     </div>
 
@@ -80,20 +82,26 @@
     <div id="view-private-chat" class="view">
       <div id="private-chat-messages" class="chat-box"></div>
       <div class="chat-input-area">
-        <input type="text" id="private-chat-input" placeholder="Message privately...">
-        <button onclick="sendPrivateMessage()" class="btn-send">➤</button>
+        <span class="icon-smile">😊</span>
+        <input type="text" id="private-chat-input" placeholder="Message">
+        <span class="icon-attach">📎</span>
+        <button onclick="sendPrivateMessage()" class="btn-send-mic">🎤</button>
       </div>
     </div>
 
-    <!-- SIDE POSTS -->
+    <!-- SIDE POSTS (X Style) -->
     <div id="view-posts" class="view">
       <div class="post-input-area">
-        <textarea id="post-content" rows="2" placeholder="What's happening?"></textarea>
+        <textarea id="post-content" rows="2" placeholder="What is happening?!"></textarea>
         <div class="post-actions">
-          <input type="file" id="post-media" accept="image/*,video/*">
+          <div class="post-icons">
+            <span>🖼️</span> <span>🎁</span> <span>📍</span> <span>📅</span>
+          </div>
+          <input type="file" id="post-media" accept="image/*,video/*" style="display:none;">
+          <label for="post-media" class="file-label">📁 Media</label>
           <button onclick="createPost()" class="btn-post">Post</button>
         </div>
-        <div id="upload-error" style="color: #ff4d4d; font-size: 12px; margin-top: 5px; font-weight: bold;"></div>
+        <div id="upload-error" style="color: #f4212e; font-size: 13px; margin-top: 8px; font-weight: bold;"></div>
       </div>
       <div id="posts-feed" class="feed-box"></div>
     </div>

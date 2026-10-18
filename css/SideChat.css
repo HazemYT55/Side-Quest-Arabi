@@ -1,8 +1,95 @@
-#chat-messages, #private-chat-messages { flex: 1; overflow-y: auto; padding: 20px; background: #0b141a; display: flex; flex-direction: column; gap: 8px; }
-.message { max-width: 80%; padding: 8px 12px; border-radius: 8px; background: #202c33; color: white; align-self: flex-start; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
-.message.mine { background: #005c4b; align-self: flex-end; }
-.message .meta { font-size: 11px; color: #8696a0; margin-bottom: 4px; }
-.message .meta b { color: #53bdeb; font-weight: normal; }
-.chat-input-area { display: flex; padding: 10px; background: #202c33; align-items: center; }
-.chat-input-area input { flex: 1; padding: 12px 18px; background: #2a3942; border: none; border-radius: 20px; color: white; outline: none; font-size: 15px; }
-.btn-send { margin-left: 10px; width: 45px; height: 45px; background: #00a884; color: white; border: none; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+/* WhatsApp Dark Mode Background */
+#chat-messages, #private-chat-messages { 
+  flex: 1; 
+  overflow-y: auto; 
+  padding: 10px 20px; 
+  background: #0b141a; 
+  display: flex; 
+  flex-direction: column; 
+  background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+  background-blend-mode: overlay;
+}
+
+/* Message Bubbles */
+.message { 
+  max-width: 85%; 
+  padding: 6px 10px 8px 10px; 
+  border-radius: 8px; 
+  background: #202c33; 
+  color: #e9edef; 
+  align-self: flex-start; 
+  position: relative;
+  margin-bottom: 2px;
+  box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* Green Bubble for You */
+.message.mine { 
+  background: #005c4b; 
+  align-self: flex-end; 
+}
+
+/* Tail for Green Bubble */
+.message.mine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  border-top-color: #005c4b;
+  border-left-color: #005c4b;
+}
+
+/* Name and Time */
+.message .meta { 
+  font-size: 12.5px; 
+  color: #53bdeb; 
+  margin-bottom: 2px; 
+  font-weight: 500;
+}
+.message.mine .meta { color: #ffd279; } /* Yellow name in green bubble */
+
+.message .time {
+  font-size: 11px;
+  color: rgba(233, 237, 239, 0.6);
+  float: right;
+  margin-top: 4px;
+  margin-left: 8px;
+}
+
+/* Input Area */
+.chat-input-area { 
+  display: flex; 
+  padding: 5px 10px; 
+  background: #0b141a; 
+  align-items: center; 
+  gap: 8px;
+}
+.chat-input-area input { 
+  flex: 1; 
+  padding: 10px 15px; 
+  background: #2a3942; 
+  border: none; 
+  border-radius: 8px; 
+  color: #d1d7db; 
+  outline: none; 
+  font-size: 16px; 
+}
+.icon-smile, .icon-attach { font-size: 22px; cursor: pointer; color: #8696a0; }
+.btn-send-mic { 
+  width: 40px; 
+  height: 40px; 
+  background: #00a884; 
+  color: #0b141a; 
+  border: none; 
+  border-radius: 50%; 
+  cursor: pointer; 
+  font-size: 20px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+}

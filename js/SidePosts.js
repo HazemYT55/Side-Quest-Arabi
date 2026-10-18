@@ -39,15 +39,26 @@ export function renderPost(post) {
   const feed = document.getElementById('posts-feed');
   const div = document.createElement('div');
   div.className = 'post';
+  
   let mediaHtml = '';
   if (post.media_url && post.media_type === 'image') mediaHtml = `<img src="${post.media_url}">`;
   if (post.media_url && post.media_type === 'video') mediaHtml = `<video src="${post.media_url}" controls></video>`;
   
+  const time = new Date(post.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric' });
+  
   div.innerHTML = `
-    <div class="post-author">${post.author_name}</div>
-    <div class="post-content">${post.content || ''}</div>
-    ${mediaHtml}
-    <div class="post-time">${new Date(post.created_at).toLocaleString()}</div>
+    <div class="post-avatar"></div>
+    <div class="post-body">
+      <div class="post-header">
+        <span class="post-author">${post.author_name}</span>
+        <span>@${post.author_name.replace(/\s+/g, '').toLowerCase()} · ${time}</span>
+      </div>
+      <div class="post-content">${post.content || ''}</div>
+      ${mediaHtml}
+      <div class="post-actions-row">
+        <span>💬 0</span> <span>🔁 0</span> <span>❤️ 0</span> <span>📊 0</span> <span>📤</span>
+      </div>
+    </div>
   `;
   feed.prepend(div);
 }
