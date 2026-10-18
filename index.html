@@ -4,77 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Side Quest Arabi</title>
-  <!-- THIS MUST BE EXACTLY style.css (No '1' at the end) -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div id="login-screen" style="display: flex; height: 100vh; align-items: center; justify-content: center; flex-direction: column;">
-    <h2>Side Quest Arabi</h2>
+  <!-- ================= LOGIN / SIGNUP SCREEN ================= -->
+  <div id="login-screen" class="screen active">
+    <div class="auth-box">
+      <h2>Side Quest Arabi</h2>
+      
+      <div class="auth-tabs">
+        <div id="tab-login" class="auth-tab active" onclick="switchAuth('login')">Login</div>
+        <div id="tab-signup" class="auth-tab" onclick="switchAuth('signup')">Sign Up</div>
+      </div>
+
+      <input type="text" id="auth-username" placeholder="Username (e.g. Moaz)" class="hidden">
+      <input type="email" id="auth-email" placeholder="Email">
+      <input type="password" id="auth-password" placeholder="Password">
+      
+      <button id="auth-btn" onclick="logIn()" class="btn-primary">Login</button>
+    </div>
+  </div>
+
+  <!-- ================= MAIN APP SCREEN ================= -->
+  <div id="app-screen" class="screen">
     
-    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 300px;">
-      
-      <div style="display: flex; margin-bottom: 15px; border-bottom: 1px solid #ccc;">
-        <div id="tab-login" class="auth-tab active" onclick="switchAuth('login')" style="flex: 1; text-align: center; padding: 10px; cursor: pointer; font-weight: bold;">Login</div>
-        <div id="tab-signup" class="auth-tab" onclick="switchAuth('signup')" style="flex: 1; text-align: center; padding: 10px; cursor: pointer; color: #888;">Sign Up</div>
-      </div>
-
-      <input type="text" id="auth-username" placeholder="Username (e.g. Moaz)" style="width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; display: none;">
-      <input type="email" id="auth-email" placeholder="Email" style="width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box;">
-      <input type="password" id="auth-password" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box;">
-      
-      <button id="auth-btn" onclick="logIn()" style="width: 100%; padding: 10px; background: #25D366; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Login</button>
-    </div>
-  </div>
-
-  <div id="app-screen" style="display: none; height: 100vh; flex-direction: column;">
-    <div class="tabs">
-      <div class="tab active" data-view="chat">Chat</div>
-      <div class="tab" data-view="posts">Feed (X)</div>
-      <div class="tab" onclick="logout()">Logout</div>
+    <!-- TOP NAVIGATION -->
+    <div class="navbar">
+      <div class="nav-tab active" data-view="chat" onclick="switchView('chat')">Chat</div>
+      <div class="nav-tab" data-view="feed" onclick="switchView('feed')">Feed (X)</div>
+      <div class="nav-tab" onclick="logout()">Logout</div>
     </div>
 
-    <div id="chat-view" class="view active">
-      <div id="chat-messages"></div>
-      <div id="chat-input-area">
+    <!-- CHAT PAGE -->
+    <div id="view-chat" class="view active">
+      <div id="chat-messages" class="chat-box"></div>
+      <div class="chat-input-area">
         <input type="text" id="chat-input" placeholder="Type a message...">
-        <button onclick="sendMessage()">Send</button>
+        <button onclick="sendMessage()" class="btn-send">Send</button>
       </div>
     </div>
 
-    <div id="posts-view" class="view">
-      <div id="posts-feed"></div>
-      <div id="post-input-area">
+    <!-- FEED PAGE -->
+    <div id="view-feed" class="view">
+      <div class="post-input-area">
         <textarea id="post-content" rows="2" placeholder="What's happening?"></textarea>
-        <input type="file" id="post-media" accept="image/*,video/*">
-        <button onclick="createPost()">Post</button>
+        <div class="post-actions">
+          <input type="file" id="post-media" accept="image/*,video/*">
+          <button onclick="createPost()" class="btn-post">Post</button>
+        </div>
       </div>
+      <div id="posts-feed" class="feed-box"></div>
     </div>
+
   </div>
 
-  <script>
-    function switchAuth(mode) {
-      const userInp = document.getElementById('auth-username');
-      const btn = document.getElementById('auth-btn');
-      const tabL = document.getElementById('tab-login');
-      const tabS = document.getElementById('tab-signup');
-
-      if (mode === 'login') {
-        userInp.style.display = 'none';
-        btn.innerText = 'Login';
-        btn.setAttribute('onclick', 'logIn()');
-        tabL.style.color = 'black';
-        tabS.style.color = '#888';
-      } else {
-        userInp.style.display = 'block';
-        btn.innerText = 'Create Account';
-        btn.setAttribute('onclick', 'signUp()');
-        tabL.style.color = '#888';
-        tabS.style.color = 'black';
-      }
-    }
-  </script>
-  <!-- THIS MUST BE app.js -->
+  <!-- LINK TO JAVASCRIPT -->
   <script type="module" src="app.js"></script>
 </body>
 </html>
