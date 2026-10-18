@@ -3,86 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Side Quest Arabi</title>
+  <title>Side Quest OS</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- ================= LOGIN SCREEN ================= -->
-  <div id="login-screen" class="screen active">
+  <!-- ================= AUTH SCREEN ================= -->
+  <div id="auth-screen" class="screen active">
     <div class="auth-box">
-      <h2>Side Quest</h2>
+      <h2>Side Quest OS</h2>
       <div class="auth-tabs">
         <div id="tab-login" class="auth-tab active" onclick="switchAuth('login')">Login</div>
         <div id="tab-signup" class="auth-tab" onclick="switchAuth('signup')">Sign Up</div>
       </div>
-      <input type="text" id="auth-username" placeholder="Username" class="hidden">
+      <input type="text" id="auth-code" placeholder="Invite Code (Check your email)" class="hidden">
+      <input type="text" id="auth-username" placeholder="Username (e.g. Moaz)" class="hidden">
       <input type="email" id="auth-email" placeholder="Email">
       <input type="password" id="auth-password" placeholder="Password">
       <button id="auth-btn" onclick="logIn()" class="btn-primary">Login</button>
     </div>
   </div>
 
-  <!-- ================= PHONE HOME SCREEN ================= -->
+  <!-- ================= HOME SCREEN ================= -->
   <div id="home-screen" class="screen">
-    <div class="wallpaper">
-      <div class="status-bar">
-        <span id="clock">12:00</span>
-        <span>📶 🔋</span>
+    <div class="wallpaper" id="phone-wallpaper">
+      
+      <!-- Dynamic Island & Status Bar -->
+      <div class="top-bar">
+        <div class="time">9:41</div>
+        <div class="dynamic-island"></div>
+        <div class="battery">100% 🔋</div>
       </div>
 
+      <!-- App Grid -->
       <div class="app-grid">
-        <!-- Chat App Icon (WhatsApp style) -->
         <div class="app-icon" onclick="openApp('chat')">
           <div class="icon-box bg-green">💬</div>
-          <span>Chat</span>
+          <span>Side Chat</span>
         </div>
 
-        <!-- X App Icon -->
-        <div class="app-icon" onclick="openApp('feed')">
+        <div class="app-icon" onclick="openApp('posts')">
           <div class="icon-box bg-black">𝕏</div>
-          <span>Feed</span>
+          <span>Side Posts</span>
         </div>
 
-        <!-- Logout App Icon -->
-        <div class="app-icon" onclick="logout()">
-          <div class="icon-box bg-red">🚪</div>
-          <span>Logout</span>
+        <div class="app-icon" onclick="openApp('settings')">
+          <div class="icon-box bg-gray">⚙️</div>
+          <span>Settings</span>
         </div>
       </div>
+
+      <!-- Bottom Dock -->
+      <div class="dock">
+        <div class="dock-icon bg-green" onclick="openApp('chat')">💬</div>
+        <div class="dock-icon bg-black" onclick="openApp('posts')">𝕏</div>
+      </div>
+
+      <!-- Page Indicator -->
+      <div class="page-dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+      </div>
+
     </div>
   </div>
 
-  <!-- ================= APP SCREEN (Opens when clicking an icon) ================= -->
+  <!-- ================= APP SCREEN ================= -->
   <div id="app-screen" class="screen">
-    
-    <!-- Top App Bar (with Back button) -->
     <div class="app-navbar">
       <button onclick="goHome()" class="btn-back">← Home</button>
-      <span id="app-title">Chat</span>
+      <span id="app-title">App</span>
     </div>
 
-    <!-- CHAT APP VIEW -->
-    <div id="view-chat" class="view active">
+    <!-- SIDE CHAT APP -->
+    <div id="view-chat" class="view">
       <div id="chat-messages" class="chat-box"></div>
       <div class="chat-input-area">
-        <input type="text" id="chat-input" placeholder="Message...">
+        <input type="text" id="chat-input" placeholder="Message team...">
         <button onclick="sendMessage()" class="btn-send">➤</button>
       </div>
     </div>
 
-    <!-- FEED APP VIEW -->
-    <div id="view-feed" class="view">
+    <!-- SIDE POSTS APP -->
+    <div id="view-posts" class="view">
       <div class="post-input-area">
         <textarea id="post-content" rows="2" placeholder="What's happening?"></textarea>
         <div class="post-actions">
           <input type="file" id="post-media" accept="image/*,video/*">
           <button onclick="createPost()" class="btn-post">Post</button>
         </div>
+        <div id="upload-error" style="color: red; font-size: 12px; margin-top: 5px;"></div>
       </div>
       <div id="posts-feed" class="feed-box"></div>
     </div>
 
+    <!-- SIDE SETTINGS APP -->
+    <div id="view-settings" class="view">
+      <div class="settings-menu">
+        <h3>Account</h3>
+        <p>Logged in as: <b id="settings-username">User</b></p>
+        <p>Email: <b id="settings-email">email</b></p>
+        <hr>
+        <h3>Phone Appearance</h3>
+        <p>Wallpaper URL:</p>
+        <input type="text" id="wallpaper-input" placeholder="Paste an image URL here...">
+        <button onclick="saveWallpaper()" class="btn-primary" style="margin-top: 10px;">Save Wallpaper</button>
+        <hr>
+        <button onclick="logout()" style="background: #ff4d4d; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold;">Log Out</button>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="app.js"></script>
