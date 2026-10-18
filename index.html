@@ -4,7 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Side Quest</title>
-  <link rel="stylesheet" href="style.css">
+  
+  <!-- CSS LINKS -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/SideChat.css">
+  <link rel="stylesheet" href="css/SidePosts.css">
+  <link rel="stylesheet" href="css/Contact.css">
+  <link rel="stylesheet" href="css/SideSettings.css">
 </head>
 <body>
 
@@ -12,17 +18,14 @@
   <div id="auth-screen" class="screen active">
     <div class="auth-box">
       <h2>Side Quest</h2>
-      
       <div class="auth-tabs">
         <div id="tab-login" class="auth-tab active" onclick="switchAuth('login')">Login</div>
         <div id="tab-signup" class="auth-tab" onclick="switchAuth('signup')">Sign Up</div>
       </div>
-      
       <input type="text" id="auth-code" placeholder="Invite Code (Check your email)" class="hidden">
       <input type="text" id="auth-username" placeholder="Username (e.g. Moaz)" class="hidden">
       <input type="email" id="auth-email" placeholder="Email">
       <input type="password" id="auth-password" placeholder="Password">
-      
       <button id="auth-btn" onclick="logIn()" class="btn-primary">Login</button>
     </div>
   </div>
@@ -30,49 +33,40 @@
   <!-- ================= HOME SCREEN ================= -->
   <div id="home-screen" class="screen">
     <div class="wallpaper" id="phone-wallpaper">
-      
-      <!-- Dynamic Island & Status Bar -->
       <div class="top-bar">
         <div class="time">12:00</div>
         <div class="dynamic-island"></div>
         <div class="battery">100% 🔋</div>
       </div>
 
-      <!-- App Grid -->
       <div class="app-grid">
         <div class="app-icon" onclick="openApp('chat')">
           <div class="icon-box bg-green">💬</div>
           <span>Side Chat</span>
         </div>
-
         <div class="app-icon" onclick="openApp('posts')">
           <div class="icon-box bg-black">𝕏</div>
           <span>Side Posts</span>
         </div>
-
         <div class="app-icon" onclick="openApp('contacts')">
           <div class="icon-box bg-blue">👥</div>
           <span>Contacts</span>
         </div>
-
         <div class="app-icon" onclick="openApp('settings')">
           <div class="icon-box bg-gray">⚙️</div>
           <span>Settings</span>
         </div>
       </div>
 
-      <!-- Bottom Dock -->
       <div class="dock">
         <div class="dock-icon bg-green" onclick="openApp('chat')">💬</div>
         <div class="dock-icon bg-blue" onclick="openApp('contacts')">👥</div>
       </div>
 
-      <!-- Page Indicator -->
       <div class="page-dots">
         <div class="dot active"></div>
         <div class="dot"></div>
       </div>
-
     </div>
   </div>
 
@@ -83,7 +77,7 @@
       <span id="app-title">App</span>
     </div>
 
-    <!-- SIDE CHAT APP -->
+    <!-- SIDE CHAT (Main Team Chat) -->
     <div id="view-chat" class="view">
       <div id="chat-messages" class="chat-box"></div>
       <div class="chat-input-area">
@@ -92,7 +86,16 @@
       </div>
     </div>
 
-    <!-- SIDE POSTS APP -->
+    <!-- PRIVATE CHAT (Opens from Contacts) -->
+    <div id="view-private-chat" class="view">
+      <div id="private-chat-messages" class="chat-box"></div>
+      <div class="chat-input-area">
+        <input type="text" id="private-chat-input" placeholder="Message privately...">
+        <button onclick="sendPrivateMessage()" class="btn-send">➤</button>
+      </div>
+    </div>
+
+    <!-- SIDE POSTS -->
     <div id="view-posts" class="view">
       <div class="post-input-area">
         <textarea id="post-content" rows="2" placeholder="What's happening?"></textarea>
@@ -105,35 +108,29 @@
       <div id="posts-feed" class="feed-box"></div>
     </div>
 
-    <!-- CONTACTS APP -->
+    <!-- CONTACTS -->
     <div id="view-contacts" class="view">
-      <div class="contacts-list" id="contacts-list">
-        <!-- Contacts will load here -->
-      </div>
+      <div class="contacts-list" id="contacts-list"></div>
     </div>
 
-    <!-- SIDE SETTINGS APP -->
+    <!-- SETTINGS -->
     <div id="view-settings" class="view">
       <div class="settings-menu">
         <h3>Account</h3>
         <p>Logged in as: <b id="settings-username">User</b></p>
         <p>Email: <b id="settings-email">email</b></p>
-        
         <hr>
-
         <h3>Phone Appearance</h3>
         <p>Wallpaper URL:</p>
         <input type="text" id="wallpaper-input" placeholder="Paste an image URL here...">
         <button onclick="saveWallpaper()" class="btn-primary" style="margin-top: 10px;">Save Wallpaper</button>
-        
         <hr>
-        
         <button onclick="logout()" style="background: #ff4d4d; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold;">Log Out</button>
       </div>
     </div>
-
   </div>
 
-  <script type="module" src="app.js"></script>
+  <!-- JS LINKS -->
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
