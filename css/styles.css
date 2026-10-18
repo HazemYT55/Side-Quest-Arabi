@@ -1,32 +1,18 @@
-/* Global Back Button */
-.global-back-btn {
-  background: transparent;
-  border: none;
-  color: #aebac1; /* WhatsApp header gray */
-  font-size: 24px;
-  cursor: pointer;
-  padding: 0 10px 0 0;
-  display: flex;
-  align-items: center;
-  transition: transform 0.1s;
-}
-.global-back-btn:active {
-  transform: scale(0.8);
+.auth-box input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  background: #2c2c2c; /* Dark background */
+  border: 1px solid #444;
+  border-radius: 10px;
+  color: #fff; /* White text */
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
 }
 
-/* Ensure headers align items properly */
-.wa-header, .wa-inner-header, .x-header, .todo-header, .settings-header {
-  display: flex;
-  align-items: center;
-}
-
-/* Fix for the X Header specifically */
-.x-header .global-back-btn {
-  color: #e7e9ea;
-}
-
-/* Fix for Todo and Settings headers */
-.todo-header, .settings-header {
-  gap: 15px;
-  color: #fff;
+/* ADD THIS NEW RULE BELOW IT */
+.auth-box input::placeholder {
+  color: #888; /* Gray placeholder text */
+  opacity: 1;
 }

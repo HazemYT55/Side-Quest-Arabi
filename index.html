@@ -3,16 +3,169 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Side Quest OS</title>
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/SideChat.css">
-  <link rel="stylesheet" href="css/SidePosts.css">
-  <link rel="stylesheet" href="css/Contact.css">
-  <link rel="stylesheet" href="css/ToDo.css">
+  <title>Side Quest</title>
+  
+  <style>
+    /* ================= 1. PHONE CONTAINER & SPLASH ================= */
+    body { display: flex; justify-content: center; align-items: center; background-color: #111; margin: 0; height: 100vh; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    
+    #splash-screen { position: absolute; z-index: 999; width: 100%; height: 100%; background: #121212; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: opacity 0.5s; }
+    #splash-screen.hidden { opacity: 0; pointer-events: none; }
+    .splash-logo { width: 100px; height: 100px; background: #25D366; border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 50px; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+    .screen { display: none; width: 100%; max-width: 400px; height: 100vh; max-height: 850px; background: #000; position: relative; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.8); border-radius: 30px; border: 8px solid #222; }
+    .screen.active { display: flex; flex-direction: column; }
+    .view { display: none; flex: 1; flex-direction: column; overflow: hidden; height: 100%; }
+    .view.active { display: flex; }
+    .hidden { display: none !important; }
+
+    /* ================= 2. AUTH SCREEN ================= */
+    #auth-screen { align-items: center; justify-content: center; background: #121212; }
+    .auth-box { background: #1e1e1e; padding: 30px; border-radius: 20px; width: 320px; text-align: center; color: white; margin: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .auth-box h2 { margin-top: 0; color: #fff; font-weight: 800; }
+    .auth-tabs { display: flex; margin-bottom: 20px; border-bottom: 1px solid #333; }
+    .auth-tab { flex: 1; padding: 10px; cursor: pointer; color: #888; font-weight: 600; }
+    .auth-tab.active { color: #fff; border-bottom: 2px solid #25D366; margin-bottom: -1px; }
+    .auth-box input { width: 100%; padding: 14px; margin-bottom: 15px; background: #2c2c2c; border: 1px solid #444; border-radius: 10px; color: #fff; font-size: 15px; outline: none; box-sizing: border-box; }
+    .auth-box input::placeholder { color: #888; }
+    .auth-box input:focus { border-color: #25D366; }
+    .btn-primary { width: 100%; padding: 14px; background: #25D366; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
+
+    /* ================= 3. HOME SCREEN ================= */
+    #home-screen { background: #000; }
+    .home-wallpaper { height: 100%; display: flex; flex-direction: column; background-size: cover; background-position: center; background-color: #121212; padding-top: 50px; }
+    .home-time { text-align: center; color: white; margin-bottom: 50px; }
+    .home-time h1 { font-size: 72px; margin: 0; font-weight: 500; letter-spacing: -3px; }
+    .home-time p { margin: 5px 0 0; font-size: 16px; opacity: 0.9; font-weight: 500; }
+    .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; padding: 0 20px; justify-items: center; align-content: start; }
+    .app-icon { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; }
+    .app-icon:active { transform: scale(0.85); }
+    .icon-box { width: 65px; height: 65px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 34px; color: white; margin-bottom: 8px; }
+    .app-icon span { color: white; font-size: 12px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+    .bg-whatsapp { background: #25D366; } .bg-x { background: #000; border: 1px solid #333; } .bg-blue { background: #3b82f6; } .bg-purple { background: #8b5cf6; } .bg-gray { background: #555; }
+
+    /* ================= 4. WHATSAPP (CHAT) ================= */
+    #view-chat { background: #111b21; position: relative; }
+    .wa-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #202c33; color: #aebac1; z-index: 10; }
+    .wa-logo { color: #e9edef; font-size: 20px; font-weight: bold; }
+    .wa-icons { font-size: 18px; display: flex; gap: 15px; cursor: pointer; }
+    
+    .wa-dropdown { position: absolute; top: 50px; right: 15px; background: #233138; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 20; display: flex; flex-direction: column; width: 150px; }
+    .wa-dropdown div { padding: 12px 15px; color: #d1d7db; font-size: 15px; border-bottom: 1px solid #111b21; cursor: pointer; }
+    .wa-dropdown div:active { background: #111b21; }
+
+    .wa-chat-list { flex: 1; overflow-y: auto; }
+    .wa-chat-item { display: flex; padding: 12px 15px; align-items: center; cursor: pointer; }
+    .wa-chat-item:active { background: #202c33; }
+    .wa-avatar { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 15px; color: white; flex-shrink: 0; }
+    .bg-group { background: #00a884; }
+    .wa-chat-info { flex: 1; border-bottom: 1px solid #222d34; padding-bottom: 12px; }
+    .wa-chat-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .wa-chat-top h4 { margin: 0; color: #e9edef; font-size: 16px; }
+    .wa-time { color: #8696a0; font-size: 12px; }
+    .wa-chat-info p { margin: 0; color: #8696a0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+    
+    .wa-bottom-nav { display: flex; justify-content: space-around; background: #202c33; padding: 10px 0; color: #8696a0; font-size: 12px; text-align: center; border-top: 1px solid #111b21; }
+    .wa-bottom-nav .active { color: #e9edef; }
+    .wa-bottom-nav div { cursor: pointer; }
+    
+    .wa-inner-header { display: flex; align-items: center; padding: 10px 15px; background: #202c33; }
+    #chat-messages, #private-chat-messages { flex: 1; overflow-y: auto; padding: 20px; background: #0b141a; display: flex; flex-direction: column; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
+    .message { max-width: 85%; padding: 6px 10px; border-radius: 8px; background: #202c33; color: #e9edef; align-self: flex-start; margin-bottom: 2px; font-size: 14.5px; line-height: 1.4; }
+    .message.mine { background: #005c4b; align-self: flex-end; }
+    .message .meta { font-size: 12px; color: #53bdeb; margin-bottom: 2px; font-weight: 500; }
+    .message.mine .meta { color: #ffd279; }
+    .message .time { font-size: 11px; color: rgba(233, 237, 239, 0.6); float: right; margin-top: 4px; margin-left: 8px; }
+    
+    .wa-input-area { display: flex; padding: 5px 10px; background: #0b141a; align-items: center; gap: 8px; }
+    .wa-input-area input { flex: 1; padding: 10px 15px; background: #2a3942; border: none; border-radius: 8px; color: #d1d7db; outline: none; }
+    .wa-icon { color: #8696a0; font-size: 22px; }
+    .wa-mic { background: #00a884; color: #0b141a; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; }
+
+    /* ================= 5. X (TWITTER) ================= */
+    #view-posts { background: #000; position: relative; }
+    .x-header { padding: 10px 15px; font-size: 24px; font-weight: bold; border-bottom: 1px solid #2f3336; color: #e7e9ea; text-align: center; display: flex; align-items: center; }
+    .x-tabs { display: flex; border-bottom: 1px solid #2f3336; }
+    .x-tab { flex: 1; text-align: center; padding: 15px; color: #71767b; font-weight: bold; cursor: pointer; }
+    .x-tab.active { color: #e7e9ea; border-bottom: 2px solid #1d9bf0; }
+    
+    #x-home-feed, #x-search-feed, #x-notif-feed, #x-msg-feed { flex: 1; overflow-y: auto; background: #000; padding-bottom: 60px; }
+    .x-search-bar { padding: 10px 15px; border-bottom: 1px solid #2f3336; }
+    .x-search-bar input { width: 100%; padding: 10px 15px; background: #202327; border: none; border-radius: 20px; color: white; outline: none; }
+    
+    .post { border-bottom: 1px solid #2f3336; padding: 12px 16px; display: flex; gap: 12px; }
+    .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: #333; flex-shrink: 0; background-size: cover; background-position: center;}
+    .post-body { flex: 1; }
+    .post-header { display: flex; gap: 4px; color: #71767b; font-size: 15px; }
+    .post-author { font-weight: bold; color: #e7e9ea; }
+    .post-content { margin-top: 4px; margin-bottom: 12px; font-size: 15px; color: #e7e9ea; line-height: 1.4; }
+    .post img, .post video { max-width: 100%; border-radius: 16px; border: 1px solid #2f3336; margin-top: 8px; }
+    .post-actions-row { display: flex; justify-content: space-between; max-width: 425px; color: #71767b; font-size: 13px; }
+    
+    .x-bottom-nav { display: flex; justify-content: space-around; background: #000; border-top: 1px solid #2f3336; padding: 15px 0; font-size: 22px; position: absolute; bottom: 0; width: 100%; color: #71767b; cursor: pointer; z-index: 10;}
+    .x-bottom-nav .active { color: #1d9bf0; }
+    .x-fab { position: absolute; bottom: 70px; right: 20px; width: 55px; height: 55px; border-radius: 50%; background: #1d9bf0; color: white; border: none; font-size: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(29, 155, 240, 0.3); z-index: 10;}
+
+    /* Modals */
+    .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; }
+    .modal.active { display: flex; align-items: flex-start; justify-content: center; padding-top: 50px; }
+    .modal-content { background: #000; width: 90%; border-radius: 16px; padding: 15px; border: 1px solid #333; color: white;}
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: #e7e9ea; font-size: 18px; }
+    .modal-content textarea { width: 100%; background: transparent; border: none; color: #e7e9ea; font-size: 18px; outline: none; resize: none; font-family: inherit; }
+    .btn-x-post { background: #1d9bf0; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+    .post-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid #2f3336; padding-top: 15px; }
+    .post-icons { display: flex; gap: 12px; color: #1d9bf0; font-size: 18px; }
+    .file-label { color: #1d9bf0; font-size: 14px; cursor: pointer; }
+
+    /* ================= 6. TO-DO ================= */
+    #view-todo { background: #f2f2f7; color: #000; }
+    .todo-header { font-size: 34px; font-weight: bold; padding: 20px; background: #fff; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 15px;}
+    .todo-list { flex: 1; overflow-y: auto; padding: 0 20px; }
+    .todo-item { display: flex; align-items: center; background: #fff; padding: 15px; margin-top: 10px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .todo-checkbox { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #007aff; margin-right: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .todo-checkbox.checked { background: #007aff; color: white; }
+    .todo-text { font-size: 16px; flex: 1; }
+    .todo-text.completed { text-decoration: line-through; color: #888; }
+    .todo-input-area { display: flex; padding: 15px; background: #fff; border-top: 1px solid #ddd; }
+    .todo-input-area input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-size: 16px; }
+    .todo-input-area button { margin-left: 10px; padding: 0 20px; background: #007aff; color: white; border: none; border-radius: 8px; font-weight: bold; }
+
+    /* ================= 7. CONTACTS ================= */
+    .contacts-list { flex: 1; overflow-y: auto; padding: 15px; background: #121212; }
+    .contact-item { display: flex; align-items: center; padding: 15px; background: #1e1e1e; border-radius: 12px; margin-bottom: 10px; cursor: pointer; }
+    .contact-avatar { width: 50px; height: 50px; border-radius: 50%; background: #3b82f6; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; margin-right: 15px; }
+    .contact-info h4 { margin: 0; font-size: 16px; color: #fff; }
+    .contact-info p { margin: 3px 0 0 0; font-size: 13px; color: #888; }
+
+    /* ================= 8. SETTINGS ================= */
+    #view-settings { background: #121212; color: #fff; }
+    .settings-header { padding: 20px; font-size: 24px; font-weight: bold; color: #fff; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 15px;}
+    .settings-content { padding: 20px; overflow-y: auto; }
+    .settings-profile { display: flex; align-items: center; background: #1e1e1e; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+    .settings-avatar { width: 60px; height: 60px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 30px; margin-right: 15px; background-size: cover; background-position: center;}
+    .settings-info h3 { margin: 0 0 5px 0; color: #fff; }
+    .settings-info p { margin: 0; color: #888; font-size: 14px; }
+    .btn-edit { margin-left: auto; background: #2c2c2c; color: #fff; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; }
+    .settings-group { background: #1e1e1e; border-radius: 15px; margin-bottom: 20px; overflow: hidden; }
+    .settings-group h4 { margin: 0; padding: 15px; color: #888; font-size: 13px; text-transform: uppercase; background: #121212; }
+    .setting-item { padding: 15px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; cursor: pointer; color: #ddd; }
+    .setting-item:last-child { border-bottom: none; }
+    .btn-logout { width: 100%; padding: 15px; background: #2a1a1a; color: #ff4d4d; border: 1px solid #ff4d4d; border-radius: 12px; font-weight: bold; cursor: pointer; }
+
+    .global-back-btn { background: transparent; border: none; color: #aebac1; font-size: 24px; cursor: pointer; padding: 0 10px 0 0; display: flex; align-items: center; transition: transform 0.1s; }
+    .global-back-btn:active { transform: scale(0.8); }
+  </style>
 </head>
 <body>
 
-  <!-- ================= AUTH ================= -->
+  <!-- SPLASH SCREEN -->
+  <div id="splash-screen">
+    <div class="splash-logo">🚀</div>
+    <h2 style="color:white; margin-top:20px; font-weight:800;">Side Quest</h2>
+  </div>
+
+  <!-- AUTH SCREEN -->
   <div id="auth-screen" class="screen active">
     <div class="auth-box">
       <h2>Side Quest</h2>
@@ -28,59 +181,61 @@
     </div>
   </div>
 
-  <!-- ================= HOME SCREEN ================= -->
+  <!-- HOME SCREEN -->
   <div id="home-screen" class="screen">
     <div class="home-wallpaper" id="phone-wallpaper">
-      <div class="home-time">
-        <h1 id="clock">12:00</h1>
-        <p id="date-display">Monday, Jan 1</p>
-      </div>
+      <div class="home-time"><h1 id="clock">12:00</h1><p id="date-display">Monday, Jan 1</p></div>
       <div class="app-grid">
         <div class="app-icon" onclick="openApp('chat')"><div class="icon-box bg-whatsapp">💬</div><span>Side Chat</span></div>
         <div class="app-icon" onclick="openApp('posts')"><div class="icon-box bg-x">𝕏</div><span>Side Posts</span></div>
-        <div class="app-icon" onclick="openApp('todo')"><div class="icon-box bg-purple">📝</div><span>Side To-Do</span></div>
+        <div class="app-icon" onclick="openApp('todo')"><div class="icon-box bg-purple">📝</div><span>To-Do</span></div>
         <div class="app-icon" onclick="openApp('contacts')"><div class="icon-box bg-blue">👥</div><span>Contacts</span></div>
         <div class="app-icon" onclick="openApp('settings')"><div class="icon-box bg-gray">⚙️</div><span>Settings</span></div>
       </div>
     </div>
   </div>
 
-  <!-- ================= APP SCREEN ================= -->
+  <!-- APP SCREEN -->
   <div id="app-screen" class="screen">
     
-    <!-- ================= WHATSAPP LIST ================= -->
+    <!-- WHATSAPP -->
     <div id="view-chat" class="view">
       <div class="wa-header">
         <button class="global-back-btn" onclick="goHome()">←</button>
         <span class="wa-logo">SideChat</span>
         <span class="wa-icons" onclick="toggleWaMenu()">📷 🔍 ⋮</span>
       </div>
-      
       <div id="wa-menu" class="wa-dropdown hidden">
-        <div onclick="alert('Coming soon!')">New Group</div>
+        <div onclick="newGroupPrompt()">New Group</div>
         <div onclick="openApp('settings')">Settings</div>
         <div onclick="logout()">Log out</div>
       </div>
-
-      <div class="wa-chat-list" id="wa-chat-list">
-        <div class="wa-chat-item" onclick="openTeamChat()">
-          <div class="wa-avatar bg-group">👥</div>
-          <div class="wa-chat-info">
-            <div class="wa-chat-top"><h4>Side Quest Team</h4><span class="wa-time">Now</span></div>
-            <p>Tap to open the group...</p>
+      
+      <div id="wa-tab-chats" class="wa-tab-content" style="flex:1; overflow-y:auto;">
+        <div class="wa-chat-list" id="wa-chat-list">
+          <div class="wa-chat-item" onclick="openTeamChat()">
+            <div class="wa-avatar bg-group">👥</div>
+            <div class="wa-chat-info">
+              <div class="wa-chat-top"><h4>Side Quest Team</h4><span class="wa-time">Now</span></div>
+              <p>Tap to open the group...</p>
+            </div>
           </div>
         </div>
       </div>
 
+      <div id="wa-tab-calls" class="wa-tab-content hidden" style="flex:1; padding:20px; text-align:center; color:#8696a0;">
+        <p style="font-size: 40px; margin-bottom: 10px;">📞</p>
+        <h3 style="color: #e9edef;">No recent calls</h3>
+        <p>Start a voice or video call with your team.</p>
+      </div>
+
       <div class="wa-bottom-nav">
-        <div class="active">💬<br>Chats</div>
-        <div onclick="alert('Updates coming soon!')">🔄<br>Updates</div>
-        <div onclick="alert('Communities coming soon!')">👥<br>Communities</div>
-        <div onclick="alert('Calls coming soon!')">📞<br>Calls</div>
+        <div class="active" onclick="switchWaTab('chats')">💬<br>Chats</div>
+        <div onclick="switchWaTab('calls')">📞<br>Calls</div>
       </div>
     </div>
 
-    <!-- TEAM CHAT (Inside WhatsApp) -->
+    <!-- TEAM CHAT -->
     <div id="view-team-chat" class="view">
       <div class="wa-inner-header">
         <button class="global-back-btn" onclick="backToChatList()">←</button>
@@ -96,7 +251,7 @@
       </div>
     </div>
 
-    <!-- PRIVATE CHAT (Inside WhatsApp) -->
+    <!-- PRIVATE CHAT -->
     <div id="view-private-chat" class="view">
       <div class="wa-inner-header">
         <button class="global-back-btn" onclick="backToChatList()">←</button>
@@ -112,36 +267,32 @@
       </div>
     </div>
 
-    <!-- ================= X (TWITTER) ================= -->
+    <!-- X -->
     <div id="view-posts" class="view">
       <div class="x-header">
         <button class="global-back-btn" onclick="goHome()">←</button>
         <div class="x-logo" style="margin-left: auto; margin-right: auto; padding-right: 30px;">𝕏</div>
       </div>
-      
       <div class="x-tabs">
         <div class="x-tab active" onclick="switchXTab('home')">For you</div>
         <div class="x-tab" onclick="switchXTab('search')">Search</div>
       </div>
-
       <div id="x-home-feed" class="feed-box"><div id="posts-feed"></div></div>
-
-      <div id="x-search-feed" class="feed-box hidden">
-        <div class="x-search-bar"><input type="text" placeholder="Search Side Quest..."></div>
-        <p style="color:#71767b;text-align:center;margin-top:50px;">Search coming soon!</p>
-      </div>
-
+      <div id="x-search-feed" class="feed-box hidden"><div class="x-search-bar"><input type="text" placeholder="Search Side Quest..."></div></div>
+      <div id="x-notif-feed" class="feed-box hidden"><div style="padding: 20px; color: #71767b; text-align: center;"><h3 style="color: #e7e9ea;">Nothing to see here — yet</h3><p>When someone mentions you, you'll find it here.</p></div></div>
+      <div id="x-msg-feed" class="feed-box hidden"><div style="padding: 20px; color: #71767b; text-align: center;"><h3 style="color: #e7e9ea;">Welcome to your inbox!</h3><p>Drop a line, share posts and more with private conversations.</p></div></div>
+      
       <button class="x-fab" onclick="openXPostModal()">+</button>
       
       <div class="x-bottom-nav">
         <div class="active" onclick="switchXTab('home')">🏠</div>
         <div onclick="switchXTab('search')">🔍</div>
-        <div onclick="alert('Notifications coming soon!')">🔔</div>
-        <div onclick="alert('Messages coming soon!')">✉️</div>
+        <div onclick="switchXTab('notif')">🔔</div>
+        <div onclick="switchXTab('msg')">✉️</div>
       </div>
     </div>
     
-    <!-- X POST MODAL -->
+    <!-- X MODAL -->
     <div id="x-post-modal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -155,38 +306,25 @@
           <label for="post-media" class="file-label">📁 Add Media</label>
         </div>
         <span id="file-chosen" style="color:#1d9bf0;font-size:12px;"></span>
-        <div id="upload-error" style="color: #f4212e; font-size: 13px; margin-top: 8px;"></div>
       </div>
     </div>
 
-    <!-- ================= TO-DO ================= -->
+    <!-- TO-DO -->
     <div id="view-todo" class="view">
-      <div class="todo-header">
-        <button class="global-back-btn" onclick="goHome()">←</button>
-        My Tasks
-      </div>
+      <div class="todo-header"><button class="global-back-btn" onclick="goHome()">←</button>My Tasks</div>
       <div id="todo-list" class="todo-list"></div>
-      <div class="todo-input-area">
-        <input type="text" id="todo-input" placeholder="Add a new task...">
-        <button onclick="addTodo()">Add</button>
-      </div>
+      <div class="todo-input-area"><input type="text" id="todo-input" placeholder="Add a new task..."><button onclick="addTodo()">Add</button></div>
     </div>
 
-    <!-- ================= CONTACTS ================= -->
+    <!-- CONTACTS -->
     <div id="view-contacts" class="view">
-      <div class="wa-header" style="background:#121212;">
-        <button class="global-back-btn" onclick="goHome()">←</button>
-        <span class="wa-logo" style="color:#fff;">Contacts</span>
-      </div>
+      <div class="wa-header" style="background:#121212;"><button class="global-back-btn" onclick="goHome()">←</button><span class="wa-logo" style="color:#fff;">Contacts</span></div>
       <div class="contacts-list" id="contacts-list"></div>
     </div>
 
-    <!-- ================= SETTINGS ================= -->
+    <!-- SETTINGS -->
     <div id="view-settings" class="view">
-      <div class="settings-header">
-        <button class="global-back-btn" onclick="goHome()">←</button>
-        Settings
-      </div>
+      <div class="settings-header"><button class="global-back-btn" onclick="goHome()">←</button>Settings</div>
       <div class="settings-content">
         <div class="settings-profile">
           <div class="settings-avatar" id="profile-avatar">👤</div>
@@ -196,26 +334,25 @@
           </div>
           <button class="btn-edit" onclick="openEditProfile()">Edit</button>
         </div>
-
         <div class="settings-group">
-          <h4>Account & Security</h4>
-          <div class="setting-item" onclick="alert('Privacy settings coming soon!')">🔒 Privacy <span>›</span></div>
+          <h4>Phone Appearance</h4>
+          <div class="setting-item" onclick="document.getElementById('wallpaper-upload').click()">🖼️ Upload Wallpaper <span>›</span>
+            <input type="file" id="wallpaper-upload" accept="image/*" style="display: none;" onchange="uploadWallpaper(event)">
+          </div>
+          <div class="setting-item" onclick="alert('Themes coming soon!')">🎨 Theme <span>›</span></div>
+        </div>
+        <div class="settings-group">
+          <h4>Account</h4>
+          <div class="setting-item" onclick="showPrivacy()">🔒 Privacy <span>›</span></div>
           <div class="setting-item" onclick="alert('Security settings coming soon!')">🛡️ Security <span>›</span></div>
         </div>
-
-        <div class="settings-group">
-          <h4>Chat Settings</h4>
-          <div class="setting-item" onclick="alert('Theme changed to Dark Mode!')">🎨 Theme <span>›</span></div>
-          <div class="setting-item" onclick="alert('Change wallpaper from the home screen!')">🖼️ Wallpaper <span>›</span></div>
-        </div>
-
         <button onclick="logout()" class="btn-logout">Log Out</button>
       </div>
     </div>
 
   </div>
 
-  <!-- ================= EDIT PROFILE MODAL ================= -->
+  <!-- EDIT PROFILE MODAL -->
   <div id="edit-profile-modal" class="modal">
     <div class="modal-content" style="background:#1e1e1e; padding:20px;">
       <h3 style="color:#fff; margin-top:0;">Edit Profile</h3>

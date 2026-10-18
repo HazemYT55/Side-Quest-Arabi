@@ -1,38 +1,37 @@
-import { supabase, currentUser } from './app.js';
+import { supabase, currentUser, currentAvatar } from './app.js';
 
 window.createPost = async function() {
   const content = document.getElementById('post-content').value.trim();
   const file = document.getElementById('post-media').files[0];
-  const errorDiv = document.getElementById('upload-error');
-  errorDiv.innerText = ''; 
-
   if (!content && !file) return; 
 
   let mediaUrl = null;
   let mediaType = 'none';
 
   if (file) {
-    if (file.size > 10 * 1024 * 1024) {
-      errorDiv.innerText = "Error: File is too large! Max size is 10MB.";
-      return;
-    }
-
+    if (file.size > 10 * 1024 * 1024) return alert("Error: File is too large! Max size is 10MB.");
     const fileName = `${Date.now()}.${file.name.split('.').pop()}`;
     const { error } = await supabase.storage.from('post-media').upload(fileName, file);
     if (!error) {
       const { data } = supabase.storage.from('post-media').getPublicUrl(fileName);
       mediaUrl = data.publicUrl;
       mediaType = file.type.startsWith('image') ? 'image' : 'video';
-    } else {
-      errorDiv.innerText = "Media upload failed. Check bucket rules.";
-      return;
     }
   }
 
-  await supabase.from('posts').insert({ content, media_url: mediaUrl, media_type: mediaType, author_name: currentUser });
+  // Saving with the global currentAvatar
+  await supabase.from('posts').insert({ 
+    content, 
+    media_url: mediaUrl, 
+    media_type: mediaType, 
+    author_name: currentUser,
+    avatar_url: currentAvatar 
+  });
   
   document.getElementById('post-content').value = '';
   document.getElementById('post-media').value = '';
+  document.getElementById('file-chosen').innerText = '';
+  closeXPostModal();
 }
 
 export function renderPost(post) {
@@ -45,9 +44,10 @@ export function renderPost(post) {
   if (post.media_url && post.media_type === 'video') mediaHtml = `<video src="${post.media_url}" controls></video>`;
   
   const time = new Date(post.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric' });
+  const pfp = post.avatar_url || `https://ui-avatars.com/api/?name=${post.author_name}&background=random`;
   
   div.innerHTML = `
-    <div class="post-avatar"></div>
+    <div class="post-avatar" style="background-image:url('${pfp}'); background-size:cover; background-position:center;"></div>
     <div class="post-body">
       <div class="post-header">
         <span class="post-author">${post.author_name}</span>
