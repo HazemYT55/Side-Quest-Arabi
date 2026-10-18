@@ -7,7 +7,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 export let currentUser = '';
 export let currentEmail = '';
 
-// Real clock for home screen
+// Clock
 function updateClock() {
   try {
     const now = new Date();
@@ -20,21 +20,21 @@ function updateClock() {
 }
 setInterval(updateClock, 1000); updateClock();
 
+// Navigation
 window.openApp = function(appName) {
   document.getElementById('home-screen').classList.remove('active');
   document.getElementById('app-screen').classList.add('active');
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(`view-${appName}`).classList.add('active');
   
-  const titles = { chat: 'Side Chat', posts: 'Side Posts', contacts: 'Contacts', settings: 'Settings' };
-  document.getElementById('app-title').innerText = titles[appName] || 'App';
+  if(appName === 'todo') import('./Todo.js').then(m => m.loadTodos());
 }
-
 window.goHome = function() {
   document.getElementById('app-screen').classList.remove('active');
   document.getElementById('home-screen').classList.add('active');
 }
 
+// Auth
 window.switchAuth = function(mode) {
   const isLogin = mode === 'login';
   document.getElementById('auth-username').classList.toggle('hidden', isLogin);
@@ -74,11 +74,12 @@ window.logIn = async function() {
     document.getElementById('auth-screen').classList.remove('active');
     document.getElementById('home-screen').classList.add('active');
     document.getElementById('settings-username').innerText = currentUser;
-    document.getElementById('settings-email').innerText = currentEmail;
     
-    const savedWall = localStorage.getItem('sq_wallpaper') || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop';
-    document.getElementById('phone-wallpaper').style.backgroundImage = `url('${savedWall}')`;
-    document.getElementById('wallpaper-input').value = savedWall;
+    // Load Profile
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', data.user.id).single();
+    if (profile) {
+      document.getElementById('settings-bio').innerText = profile.bio || 'Hey there! I am using Side Quest.';
+    }
 
     import('./SideChat.js').then(m => m.initChat());
     import('./SidePosts.js').then(m => m.initFeed());
@@ -91,29 +92,15 @@ window.logout = async function() {
   location.reload();
 }
 
-window.saveWallpaper = function() {
-  const url = document.getElementById('wallpaper-input').value.trim();
-  if (!url) return;
-  localStorage.setItem('sq_wallpaper', url);
-  document.getElementById('phone-wallpaper').style.backgroundImage = `url('${url}')`;
-  alert("Wallpaper saved!");
+window.backToChatList = function() {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-chat').classList.add('active');
+}
+window.openTeamChat = function() {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-team-chat').classList.add('active');
 }
 
-supabase.auth.getSession().then(({ data: { session } }) => {
-  if (session) {
-    currentUser = session.user.user_metadata.display_name || session.user.email.split('@')[0];
-    currentEmail = session.user.email;
-    document.getElementById('auth-screen').classList.remove('active');
-    document.getElementById('home-screen').classList.add('active');
-    document.getElementById('settings-username').innerText = currentUser;
-    document.getElementById('settings-email').innerText = currentEmail;
-    
-    const savedWall = localStorage.getItem('sq_wallpaper') || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop';
-    document.getElementById('phone-wallpaper').style.backgroundImage = `url('${savedWall}')`;
-    document.getElementById('wallpaper-input').value = savedWall;
-
-    import('./SideChat.js').then(m => m.initChat());
-    import('./SidePosts.js').then(m => m.initFeed());
-    import('./Contact.js').then(m => m.loadContacts());
-  }
-});
+// X Modal
+window.openXPostModal = () => document.getElementById('x-post-modal').classList.add('active');
+window.closeXPostModal = () => document.getElementById('x-post-modal').classList.remove('active');

@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Side Quest</title>
-  
+  <title>Side Quest OS</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/SideChat.css">
   <link rel="stylesheet" href="css/SidePosts.css">
   <link rel="stylesheet" href="css/Contact.css">
-  <link rel="stylesheet" href="css/SideSettings.css">
+  <link rel="stylesheet" href="css/ToDo.css">
 </head>
 <body>
 
-  <!-- ================= AUTH SCREEN ================= -->
+  <!-- ================= AUTH ================= -->
   <div id="auth-screen" class="screen active">
     <div class="auth-box">
       <h2>Side Quest</h2>
@@ -32,7 +31,6 @@
   <!-- ================= HOME SCREEN ================= -->
   <div id="home-screen" class="screen">
     <div class="home-wallpaper" id="phone-wallpaper">
-      
       <div class="home-time">
         <h1 id="clock">12:00</h1>
         <p id="date-display">Monday, Jan 1</p>
@@ -47,6 +45,10 @@
           <div class="icon-box bg-x">𝕏</div>
           <span>Side Posts</span>
         </div>
+        <div class="app-icon" onclick="openApp('todo')">
+          <div class="icon-box bg-purple">📝</div>
+          <span>Side To-Do</span>
+        </div>
         <div class="app-icon" onclick="openApp('contacts')">
           <div class="icon-box bg-blue">👥</div>
           <span>Contacts</span>
@@ -56,77 +58,137 @@
           <span>Settings</span>
         </div>
       </div>
-
     </div>
   </div>
 
   <!-- ================= APP SCREEN ================= -->
   <div id="app-screen" class="screen">
-    <div class="app-navbar">
-      <button onclick="goHome()" class="btn-back">←</button>
-      <span id="app-title">App</span>
-    </div>
-
-    <!-- SIDE CHAT (WhatsApp Style) -->
+    
+    <!-- CHAT APP -->
     <div id="view-chat" class="view">
-      <div id="chat-messages" class="chat-box"></div>
-      <div class="chat-input-area">
-        <span class="icon-smile">😊</span>
-        <input type="text" id="chat-input" placeholder="Message">
-        <span class="icon-attach">📎</span>
-        <button onclick="sendMessage()" class="btn-send-mic">🎤</button>
+      <!-- WhatsApp Header -->
+      <div class="wa-header">
+        <span class="wa-logo">SideChat</span>
+        <span class="wa-icons">📷 🔍 ⋮</span>
       </div>
-    </div>
-
-    <!-- PRIVATE CHAT -->
-    <div id="view-private-chat" class="view">
-      <div id="private-chat-messages" class="chat-box"></div>
-      <div class="chat-input-area">
-        <span class="icon-smile">😊</span>
-        <input type="text" id="private-chat-input" placeholder="Message">
-        <span class="icon-attach">📎</span>
-        <button onclick="sendPrivateMessage()" class="btn-send-mic">🎤</button>
-      </div>
-    </div>
-
-    <!-- SIDE POSTS (X Style) -->
-    <div id="view-posts" class="view">
-      <div class="post-input-area">
-        <textarea id="post-content" rows="2" placeholder="What is happening?!"></textarea>
-        <div class="post-actions">
-          <div class="post-icons">
-            <span>🖼️</span> <span>🎁</span> <span>📍</span> <span>📅</span>
+      <!-- WhatsApp Chat List -->
+      <div class="wa-chat-list" id="wa-chat-list">
+        <!-- Main team chat item -->
+        <div class="wa-chat-item" onclick="openTeamChat()">
+          <div class="wa-avatar bg-group">👥</div>
+          <div class="wa-chat-info">
+            <div class="wa-chat-top">
+              <h4>Side Quest Team</h4>
+              <span class="wa-time">Now</span>
+            </div>
+            <p>The main group chat...</p>
           </div>
-          <input type="file" id="post-media" accept="image/*,video/*" style="display:none;">
-          <label for="post-media" class="file-label">📁 Media</label>
-          <button onclick="createPost()" class="btn-post">Post</button>
         </div>
-        <div id="upload-error" style="color: #f4212e; font-size: 13px; margin-top: 8px; font-weight: bold;"></div>
+      </div>
+      <!-- Bottom Nav (WhatsApp) -->
+      <div class="wa-bottom-nav">
+        <div class="active">💬<br>Chats</div>
+        <div>🔄<br>Updates</div>
+        <div>👥<br>Communities</div>
+        <div>📞<br>Calls</div>
+      </div>
+    </div>
+
+    <!-- TEAM CHAT SCREEN (Inside Chat App) -->
+    <div id="view-team-chat" class="view">
+      <div class="wa-inner-header">
+        <button onclick="backToChatList()" style="background:none;border:none;color:#aebac1;font-size:20px;">←</button>
+        <div class="wa-avatar bg-group" style="width:35px;height:35px;font-size:16px;margin-left:10px;">👥</div>
+        <span style="margin-left:10px;font-weight:bold;color:#e9edef;">Side Quest Team</span>
+      </div>
+      <div id="chat-messages" class="chat-box"></div>
+      <div class="wa-input-area">
+        <span class="wa-icon">😊</span>
+        <input type="text" id="chat-input" placeholder="Message">
+        <span class="wa-icon">📎</span>
+        <button onclick="sendMessage()" class="wa-mic">🎤</button>
+      </div>
+    </div>
+
+    <!-- X APP -->
+    <div id="view-posts" class="view">
+      <div class="x-header">
+        <div class="x-logo">𝕏</div>
       </div>
       <div id="posts-feed" class="feed-box"></div>
+      <!-- Floating Action Button for X -->
+      <button class="x-fab" onclick="openXPostModal()">+</button>
+      <!-- Bottom Nav (X) -->
+      <div class="x-bottom-nav">
+        <div>🏠</div><div>🔍</div><div>🔔</div><div>✉️</div>
+      </div>
+    </div>
+    
+    <!-- X POST MODAL -->
+    <div id="x-post-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span onclick="closeXPostModal()" style="cursor:pointer;">✕</span>
+          <button onclick="createPost()" class="btn-x-post">Post</button>
+        </div>
+        <textarea id="post-content" placeholder="What is happening?!"></textarea>
+        <div class="post-actions">
+          <div class="post-icons">🖼️ 🎁 📍 📅</div>
+          <input type="file" id="post-media" accept="image/*,video/*" style="display:none;" onchange="document.getElementById('file-chosen').innerText = 'Media attached'">
+          <label for="post-media" class="file-label">📁 Add Media</label>
+        </div>
+        <span id="file-chosen" style="color:#1d9bf0;font-size:12px;"></span>
+        <div id="upload-error" style="color: #f4212e; font-size: 13px; margin-top: 8px;"></div>
+      </div>
     </div>
 
-    <!-- CONTACTS -->
+    <!-- TO-DO APP -->
+    <div id="view-todo" class="view">
+      <div class="todo-header">My Tasks</div>
+      <div id="todo-list" class="todo-list"></div>
+      <div class="todo-input-area">
+        <input type="text" id="todo-input" placeholder="Add a new task...">
+        <button onclick="addTodo()">Add</button>
+      </div>
+    </div>
+
+    <!-- CONTACTS APP -->
     <div id="view-contacts" class="view">
+      <div class="wa-header" style="background:#121212;"><span class="wa-logo" style="color:#fff;">Contacts</span></div>
       <div class="contacts-list" id="contacts-list"></div>
     </div>
 
-    <!-- SETTINGS -->
+    <!-- SETTINGS APP -->
     <div id="view-settings" class="view">
-      <div class="settings-menu">
-        <h3>Account</h3>
-        <div class="profile-card">
-          <p>Logged in as: <b id="settings-username">User</b></p>
-          <p>Email: <b id="settings-email">email</b></p>
-        </div>
+      <div class="settings-header">Settings</div>
+      <div class="settings-content">
         
-        <h3 style="margin-top: 20px;">Wallpaper</h3>
-        <input type="text" id="wallpaper-input" placeholder="Paste image URL here...">
-        <button onclick="saveWallpaper()" class="btn-primary">Save Wallpaper</button>
-        <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+        <!-- Profile Section -->
+        <div class="settings-profile">
+          <div class="settings-avatar" id="profile-avatar">👤</div>
+          <div class="settings-info">
+            <h3 id="settings-username">User</h3>
+            <p id="settings-bio">Hey there! I am using Side Quest.</p>
+          </div>
+          <button class="btn-edit" onclick="editProfile()">Edit</button>
+        </div>
+
+        <div class="settings-group">
+          <h4>Account & Security</h4>
+          <div class="setting-item" onclick="alert('Account settings coming soon!')">🔒 Privacy <span>›</span></div>
+          <div class="setting-item" onclick="alert('Security settings coming soon!')">🛡️ Security <span>›</span></div>
+        </div>
+
+        <div class="settings-group">
+          <h4>Chat Settings</h4>
+          <div class="setting-item" onclick="alert('Theme settings coming soon!')">🎨 Theme <span>›</span></div>
+          <div class="setting-item" onclick="alert('Wallpaper settings coming soon!')">🖼️ Wallpaper <span>›</span></div>
+        </div>
+
         <button onclick="logout()" class="btn-logout">Log Out</button>
       </div>
     </div>
+
   </div>
 
   <script type="module" src="js/app.js"></script>
