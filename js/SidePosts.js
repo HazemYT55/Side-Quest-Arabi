@@ -19,7 +19,7 @@ window.createPost = async function() {
     }
   }
 
-  // Saving with the global currentAvatar
+  // Save the post with the current avatar
   await supabase.from('posts').insert({ 
     content, 
     media_url: mediaUrl, 
@@ -61,6 +61,54 @@ export function renderPost(post) {
     </div>
   `;
   feed.prepend(div);
+}
+
+// --- WORKING X SEARCH ---
+window.searchUsers = async function() {
+  const query = document.getElementById('x-search-input').value.trim();
+  const resultsDiv = document.getElementById('x-search-results');
+  
+  if(!query) {
+    resultsDiv.innerHTML = '<p style="color:#71767b; text-align:center; padding:20px;">Type a name to search for users.</p>';
+    return;
+  }
+
+  // Search by BOTH display_name and username
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('display_name, username, email, avatar_url')
+    .or(`display_name.ilike.%${query}%,username.ilike.%${query}%`);
+
+  if (error) {
+    console.error(error);
+    resultsDiv.innerHTML = `<p style="color:#f4212e; text-align:center; padding:20px;">Error: ${error.message}</p>`;
+    return;
+  }
+
+  resultsDiv.innerHTML = '';
+  if (data.length === 0) {
+    resultsDiv.innerHTML = '<p style="color:#71767b; text-align:center; padding:20px;">No users found.</p>';
+    return;
+  }
+
+  data.forEach(user => {
+    const div = document.createElement('div');
+    div.className = 'post';
+    const pfp = user.avatar_url || `https://ui-avatars.com/api/?name=${user.display_name}&background=random`;
+    
+    // Clicking a user starts a private chat with them!
+    div.onclick = () => import('./SideChat.js').then(m => m.openPrivateChat(user.display_name));
+    div.style.cursor = 'pointer';
+
+    div.innerHTML = `
+      <div class="post-avatar" style="background-image:url('${pfp}'); background-size:cover; background-position:center;"></div>
+      <div class="post-body">
+        <div class="post-author">${user.display_name}</div>
+        <div style="color:#71767b; font-size:14px;">@${user.username || user.display_name}</div>
+      </div>
+    `;
+    resultsDiv.appendChild(div);
+  });
 }
 
 export async function initFeed() {

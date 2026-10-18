@@ -1,30 +1,43 @@
-import { supabase } from './app.js';
+import { supabase, currentUser } from './app.js';
 import { openPrivateChat } from './SideChat.js';
 
-export function loadContacts() {
+export async function loadContacts() {
+  const list = document.getElementById('contacts-list');
+  list.innerHTML = '<p style="color:#888; text-align:center;">Search for a friend above to start chatting.</p>';
+}
+
+window.addFriend = async function() {
+  const email = document.getElementById('friend-search').value.trim().toLowerCase();
   const list = document.getElementById('contacts-list');
   
-  // We use the demo list here to avoid exposing user emails. 
-  // In a real app, you would query Supabase for all users.
-  const contacts = [
-    { name: "Moaz", phone: "+966 54 060 3175", initial: "M" },
-    { name: "Omar", phone: "+966 591429043", initial: "O" },
-    { name: "Hazem", phone: "Admin", initial: "H" }
-  ];
+  if (!email) return alert("Please enter an email.");
 
-  list.innerHTML = '';
-  contacts.forEach(contact => {
-    const div = document.createElement('div');
-    div.className = 'contact-item';
-    // Clicking opens the private chat!
-    div.onclick = () => openPrivateChat(contact.name);
-    div.innerHTML = `
-      <div class="contact-avatar">${contact.initial}</div>
+  // Search for the user in the database
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('display_name, email, avatar_url')
+    .eq('email', email)
+    .single();
+
+  if (error || !data) {
+    alert("User not found! Make sure they have created an account.");
+    return;
+  }
+
+  if (data.display_name === currentUser) {
+    alert("You can't add yourself!");
+    return;
+  }
+
+  // Show the found user
+  list.innerHTML = `
+    <div class="contact-item" onclick="openPrivateChat('${data.display_name}')">
+      <div class="contact-avatar" style="background-image:url('${data.avatar_url || 'https://ui-avatars.com/api/?name=' + data.display_name}'); background-size:cover;"></div>
       <div class="contact-info">
-        <h4>${contact.name}</h4>
-        <p>${contact.phone}</p>
+        <h4>${data.display_name}</h4>
+        <p>${data.email}</p>
       </div>
-    `;
-    list.appendChild(div);
-  });
+    </div>
+  `;
+  document.getElementById('friend-search').value = '';
 }
