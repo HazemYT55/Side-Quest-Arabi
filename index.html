@@ -35,28 +35,12 @@
         <h1 id="clock">12:00</h1>
         <p id="date-display">Monday, Jan 1</p>
       </div>
-
       <div class="app-grid">
-        <div class="app-icon" onclick="openApp('chat')">
-          <div class="icon-box bg-whatsapp">💬</div>
-          <span>Side Chat</span>
-        </div>
-        <div class="app-icon" onclick="openApp('posts')">
-          <div class="icon-box bg-x">𝕏</div>
-          <span>Side Posts</span>
-        </div>
-        <div class="app-icon" onclick="openApp('todo')">
-          <div class="icon-box bg-purple">📝</div>
-          <span>Side To-Do</span>
-        </div>
-        <div class="app-icon" onclick="openApp('contacts')">
-          <div class="icon-box bg-blue">👥</div>
-          <span>Contacts</span>
-        </div>
-        <div class="app-icon" onclick="openApp('settings')">
-          <div class="icon-box bg-gray">⚙️</div>
-          <span>Settings</span>
-        </div>
+        <div class="app-icon" onclick="openApp('chat')"><div class="icon-box bg-whatsapp">💬</div><span>Side Chat</span></div>
+        <div class="app-icon" onclick="openApp('posts')"><div class="icon-box bg-x">𝕏</div><span>Side Posts</span></div>
+        <div class="app-icon" onclick="openApp('todo')"><div class="icon-box bg-purple">📝</div><span>Side To-Do</span></div>
+        <div class="app-icon" onclick="openApp('contacts')"><div class="icon-box bg-blue">👥</div><span>Contacts</span></div>
+        <div class="app-icon" onclick="openApp('settings')"><div class="icon-box bg-gray">⚙️</div><span>Settings</span></div>
       </div>
     </div>
   </div>
@@ -64,34 +48,28 @@
   <!-- ================= APP SCREEN ================= -->
   <div id="app-screen" class="screen">
     
-    <!-- ================= WHATSAPP ================= -->
+    <!-- ================= WHATSAPP LIST ================= -->
     <div id="view-chat" class="view">
       <div class="wa-header">
+        <button class="global-back-btn" onclick="goHome()">←</button>
         <span class="wa-logo">SideChat</span>
         <span class="wa-icons" onclick="toggleWaMenu()">📷 🔍 ⋮</span>
       </div>
       
-      <!-- WA Dropdown Menu -->
       <div id="wa-menu" class="wa-dropdown hidden">
-        <div onclick="goHome()">New Group</div>
-        <div onclick="goHome()">Settings</div>
-        <div onclick="goHome()">Log out</div>
+        <div onclick="alert('Coming soon!')">New Group</div>
+        <div onclick="openApp('settings')">Settings</div>
+        <div onclick="logout()">Log out</div>
       </div>
 
-      <!-- Chat List -->
       <div class="wa-chat-list" id="wa-chat-list">
-        <!-- Team Chat -->
         <div class="wa-chat-item" onclick="openTeamChat()">
           <div class="wa-avatar bg-group">👥</div>
           <div class="wa-chat-info">
-            <div class="wa-chat-top">
-              <h4>Side Quest Team</h4>
-              <span class="wa-time">Now</span>
-            </div>
+            <div class="wa-chat-top"><h4>Side Quest Team</h4><span class="wa-time">Now</span></div>
             <p>Tap to open the group...</p>
           </div>
         </div>
-        <!-- Private chats will be injected here dynamically by JS -->
       </div>
 
       <div class="wa-bottom-nav">
@@ -102,10 +80,10 @@
       </div>
     </div>
 
-    <!-- TEAM CHAT -->
+    <!-- TEAM CHAT (Inside WhatsApp) -->
     <div id="view-team-chat" class="view">
       <div class="wa-inner-header">
-        <button onclick="backToChatList()" style="background:none;border:none;color:#aebac1;font-size:20px;">←</button>
+        <button class="global-back-btn" onclick="backToChatList()">←</button>
         <div class="wa-avatar bg-group" style="width:35px;height:35px;font-size:16px;margin-left:10px;">👥</div>
         <span style="margin-left:10px;font-weight:bold;color:#e9edef;">Side Quest Team</span>
       </div>
@@ -118,27 +96,39 @@
       </div>
     </div>
 
+    <!-- PRIVATE CHAT (Inside WhatsApp) -->
+    <div id="view-private-chat" class="view">
+      <div class="wa-inner-header">
+        <button class="global-back-btn" onclick="backToChatList()">←</button>
+        <div class="wa-avatar bg-blue" id="private-chat-avatar" style="width:35px;height:35px;font-size:16px;margin-left:10px;">U</div>
+        <span id="private-chat-name" style="margin-left:10px;font-weight:bold;color:#e9edef;">User</span>
+      </div>
+      <div id="private-chat-messages" class="chat-box"></div>
+      <div class="wa-input-area">
+        <span class="wa-icon">😊</span>
+        <input type="text" id="private-chat-input" placeholder="Message">
+        <span class="wa-icon">📎</span>
+        <button onclick="sendPrivateMessage()" class="wa-mic">🎤</button>
+      </div>
+    </div>
+
     <!-- ================= X (TWITTER) ================= -->
     <div id="view-posts" class="view">
-      <div class="x-header"><div class="x-logo">𝕏</div></div>
+      <div class="x-header">
+        <button class="global-back-btn" onclick="goHome()">←</button>
+        <div class="x-logo" style="margin-left: auto; margin-right: auto; padding-right: 30px;">𝕏</div>
+      </div>
       
-      <!-- X Tabs -->
       <div class="x-tabs">
         <div class="x-tab active" onclick="switchXTab('home')">For you</div>
         <div class="x-tab" onclick="switchXTab('search')">Search</div>
       </div>
 
-      <!-- X Home Feed -->
-      <div id="x-home-feed" class="feed-box">
-        <div id="posts-feed"></div>
-      </div>
+      <div id="x-home-feed" class="feed-box"><div id="posts-feed"></div></div>
 
-      <!-- X Search Feed -->
       <div id="x-search-feed" class="feed-box hidden">
-        <div class="x-search-bar">
-          <input type="text" placeholder="Search Side Quest...">
-        </div>
-        <p style="color:#71767b;text-align:center;margin-top:50px;">Search functionality coming soon!</p>
+        <div class="x-search-bar"><input type="text" placeholder="Search Side Quest..."></div>
+        <p style="color:#71767b;text-align:center;margin-top:50px;">Search coming soon!</p>
       </div>
 
       <button class="x-fab" onclick="openXPostModal()">+</button>
@@ -171,7 +161,10 @@
 
     <!-- ================= TO-DO ================= -->
     <div id="view-todo" class="view">
-      <div class="todo-header">My Tasks</div>
+      <div class="todo-header">
+        <button class="global-back-btn" onclick="goHome()">←</button>
+        My Tasks
+      </div>
       <div id="todo-list" class="todo-list"></div>
       <div class="todo-input-area">
         <input type="text" id="todo-input" placeholder="Add a new task...">
@@ -181,15 +174,20 @@
 
     <!-- ================= CONTACTS ================= -->
     <div id="view-contacts" class="view">
-      <div class="wa-header" style="background:#121212;"><span class="wa-logo" style="color:#fff;">Contacts</span></div>
+      <div class="wa-header" style="background:#121212;">
+        <button class="global-back-btn" onclick="goHome()">←</button>
+        <span class="wa-logo" style="color:#fff;">Contacts</span>
+      </div>
       <div class="contacts-list" id="contacts-list"></div>
     </div>
 
     <!-- ================= SETTINGS ================= -->
     <div id="view-settings" class="view">
-      <div class="settings-header">Settings</div>
+      <div class="settings-header">
+        <button class="global-back-btn" onclick="goHome()">←</button>
+        Settings
+      </div>
       <div class="settings-content">
-        
         <div class="settings-profile">
           <div class="settings-avatar" id="profile-avatar">👤</div>
           <div class="settings-info">
@@ -201,7 +199,7 @@
 
         <div class="settings-group">
           <h4>Account & Security</h4>
-          <div class="setting-item" onclick="alert('Account settings coming soon!')">🔒 Privacy <span>›</span></div>
+          <div class="setting-item" onclick="alert('Privacy settings coming soon!')">🔒 Privacy <span>›</span></div>
           <div class="setting-item" onclick="alert('Security settings coming soon!')">🛡️ Security <span>›</span></div>
         </div>
 
